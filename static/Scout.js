@@ -167,6 +167,7 @@ class Player{
             for(let item of this.hand){
                 item.index = this.hand.indexOf(item)
             }
+            game.turnPlayer = nextPlayer(game.turnPlayer)
         };
         this.combination = {cards:[], valid:true, type:'', owner:this};
         console.log(game.fieldCards)
@@ -268,7 +269,10 @@ const game = {allCards:allCards, usingCards:usingCards, players:players, round:0
         } else {
             return this.players[this.players.indexOf(cp)+1];
         }
-      }
+    },
+    start(){
+        this.round += 1
+    }
 };
 
 //画面表示
@@ -304,13 +308,13 @@ $('.hand').on('click', '.card',function(){
         $(this).css('background-color', '')
         thisCard.holder.cancel(thisCard)
     }
-    taro.checkCombination()
+    game.turnPlayer.checkCombination()
 })
 $('#play').on('click',function(){
-    taro.playCards();
+    game.turnPlayer.playCards();
 })
 $('#reverse').on('click',function(){
-    taro.reverseHand();
+    game.turnPlayer.reverseHand();
 })
 
 

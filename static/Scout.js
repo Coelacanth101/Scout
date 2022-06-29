@@ -275,22 +275,11 @@ const game = {allCards:allCards, usingCards:usingCards, players:players, round:0
 const display = {
     reloadHand(){
         for(let p of game.players){
-            if(p.number === 1){
-                $(`#player${p.number}hand`).html('')
-                for(c of p.hand){
-                    $(`#player${p.number}hand`).append(`<img src="./${c.name}.png" id="mycard${c.index}" class="card ${c.position}" alt="${c.name}">`)
-                }
-            }else{
-                let cards = '';
-                let rcards = '';
-                for(c of p.hand){
-                    cards += ` ${c.number}`
-                    rcards += ` ${c.rnumber}`
-                }
-                $(`#player${p.number}`).html(`<div>${p.name}:${cards}</div>`)
-                $(`#player${p.number}`).append(`<div>${p.name}:${rcards}</div>`)
-            }
-        }
+            $(`#player${p.number}hand`).html('')
+            for(c of p.hand){
+                $(`#player${p.number}hand`).append(`<img src="./${c.name}.png" id="mycard${c.index}" class="card ${c.position}" alt="${c.name}">`);
+            };
+        };
     },
     reloadField(){
         $('#field').html('')

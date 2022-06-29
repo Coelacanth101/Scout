@@ -1,0 +1,24 @@
+.container{
+    max-width: 800px;
+    height: 100%;
+    margin: auto;
+}
+    #players{
+        margin: auto;
+    }
+        .player{
+            margin: auto;
+        }
+            .hand{
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        .card{
+            width: 50px;
+            height: auto;
+            padding: 0.5%;
+        }
+        .reverse{
+            transform: rotate(180deg)
+        }

@@ -1,3 +1,4 @@
+const socket = io();
 let allCards = [];
 let usingCards = [];
 let players = [];
@@ -60,10 +61,12 @@ class Player{
         players.push(this);
     };
     reverseHand(){
-        for(let card of this.hand){
-            card.reverse();
+        if(game.round === 0){
+            for(let card of this.hand){
+                card.reverse();
+            };
+            display.reloadHand();
         };
-        display.reloadHand();
     };
     choice(card){
         if(this.combination.cards.length === 0){
@@ -169,6 +172,7 @@ class Player{
         console.log(game.fieldCards)
         display.reloadHand();
         display.reloadField();
+        game.round += 1;
     };
 }
 
@@ -186,7 +190,7 @@ while(t <= 9){
     t += 1;
 };
 
-const game = {allCards:allCards, usingCards:usingCards, players:players, round:1, fieldCards:fieldCards, turnPlayer:'', startPlayer:'', turn:0,
+const game = {allCards:allCards, usingCards:usingCards, players:players, round:0, fieldCards:fieldCards, turnPlayer:'', startPlayer:'', turn:0,
     deckMake(){
         if(this.players.length === 3){
             this.usingCards = []

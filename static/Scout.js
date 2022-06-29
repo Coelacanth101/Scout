@@ -1,4 +1,4 @@
-const socket = io();
+/*const socket = io();*/
 let allCards = [];
 let usingCards = [];
 let players = [];
@@ -167,7 +167,7 @@ class Player{
             for(let item of this.hand){
                 item.index = this.hand.indexOf(item)
             }
-            game.turnPlayer = nextPlayer(game.turnPlayer)
+            game.turnEnd()
         };
         this.combination = {cards:[], valid:true, type:'', owner:this};
         console.log(game.fieldCards)
@@ -232,7 +232,7 @@ const game = {allCards:allCards, usingCards:usingCards, players:players, round:0
                 card.shuffle();
                 p.hand.push(card);
                 card.holder = p;
-                if(this.round === 1 && card.name === '1-2'){
+                if(card.name === '1-2'){
                     this.turnPlayer = p;
                     this.startPlayer = p;
                 }
@@ -260,14 +260,11 @@ const game = {allCards:allCards, usingCards:usingCards, players:players, round:0
             return false;
         }
     },
-    nextRound(){
-        this.round += 1;
-    },
-    nextPlayer(cp){
-        if(this.players.indexOf(cp) === this.players.length-1){
+    turnEnd(){
+        if(this.players.indexOf(this.turnPlayer) === this.players.length-1){
             return this.players[0];
         } else {
-            return this.players[this.players.indexOf(cp)+1];
+            return this.players[this.players.indexOf(this.turnPlayer)+1];
         }
     },
     start(){

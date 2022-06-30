@@ -3,12 +3,29 @@
     height: 100%;
     margin: auto;
 }
+    #field{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    #nameinputarea{
+        display: none;
+    }
     #players{
         margin: auto;
     }
         .player{
             margin: auto;
         }
+            .name{
+                text-align:center;
+            }
+            .information{
+                text-align:center;
+            }
+                p{
+                    display:inline;
+                }
             .hand{
                 display: flex;
                 flex-wrap: wrap;

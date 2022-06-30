@@ -1,8 +1,6 @@
 /*const socket = io();*/
 let allCards = [];
-let usingCards = [];
 let players = [];
-let fieldCards = {cards:[], valid:true, type:'', owner:''};
 //リストから削除
 function discard(item,list){
     if(list.includes(item)){
@@ -15,11 +13,11 @@ class Card{
         this.topNumber = topNumber;
         this.bottomNumber = bottomNumber;
         this.number = topNumber;
-        this.rnumber = bottomNumber
-        this.position = 'upright'
-        this.name = `${topNumber}-${bottomNumber}`
-        this.index
-        this.holder
+        this.rnumber = bottomNumber;
+        this.position = 'upright';
+        this.name = `${topNumber}-${bottomNumber}`;
+        this.index;
+        this.holder;
     };
     reverse(){
         if(this.position === 'upright'){
@@ -53,11 +51,14 @@ class Player{
         this.number = number;
         this.socketID = socketID
         this.hand = [];
-        this.gain = [];
+        this.gain = 0;
         this.combination = {cards:[], valid:true, type:'', owner:this};
         this.doubleAction = 1;
         this.chip = 0;
-
+        this.ready = false
+        this.candidate
+        this.scoutplace = [];
+        this.action = '';
         players.push(this);
     };
     reverseHand(){
@@ -65,7 +66,7 @@ class Player{
             for(let card of this.hand){
                 card.reverse();
             };
-            display.reloadHand();
+            display.allHands();
         };
     };
     choice(card){
@@ -154,26 +155,106 @@ class Player{
             }
             this.combination.cards = arr
             this.combination.type = 'sequence'
-        }
-        if(this.combination.valid && game.combiJudge(this.combination, game.fieldCards)){
-            for(let item of this.combination.cards){
-                item.index = this.combination.cards.indexOf(item)
-            }
-            game.fieldCards = this.combination;
-            $(`.card`).css('background-color', '')
-            for(let item of this.combination.cards){
-                discard(item, this.hand)
-            }
-            for(let item of this.hand){
-                item.index = this.hand.indexOf(item)
-            }
-            game.turnEnd()
         };
+        if(this.action !== 'double'){
+            if(this.combination.valid && game.combiJudge(this.combination, game.fieldCards)){
+                this.gain += game.fieldCards.cards.length
+                for(let item of this.combination.cards){
+                    item.index = this.combination.cards.indexOf(item)
+                }
+                game.fieldCards = this.combination;
+                for(let item of this.combination.cards){
+                    discard(item, this.hand)
+                }
+                for(let item of this.hand){
+                    item.index = this.hand.indexOf(item)
+                }
+                this.action = ''
+                display.gain(this)
+                display.myHand(this);
+                display.field();
+                game.turnEnd()
+            };
+        }
         this.combination = {cards:[], valid:true, type:'', owner:this};
-        console.log(game.fieldCards)
-        display.reloadHand();
-        display.reloadField();
-        game.round += 1;
+        this.candidate = '';
+        this.scoutplace = []
+    };
+    startOK(){
+        this.ready = true;
+    };
+    choiceCandidate(card){
+        if(!this.candidate){
+            this.candidate = card;
+        }else if(this.candidate !== card){
+            this.candidate = card;
+        }else{
+            this.candidate = '';
+        }
+    };
+    choiceScoutPlace(card){
+        if(this.scoutplace.includes(card)){
+            discard(card, this.scoutplace);
+        }else if(this.scoutplace.length === 0){
+            this.scoutplace.push(card);
+        }else if(this.scoutplace.length === 1){
+            if(card.index === this.scoutplace[0].index-1){
+                this.scoutplace.unshift(card);
+            }else if(card.index === this.scoutplace[0].index+1){
+                this.scoutplace.push(card);
+            }
+        }
+    };
+    scout(){
+        if(this.action !== 'onlyplay'){
+            if(this.candidate && this.scoutplace.length){
+                if(this.scoutplace.length === 2){
+                    this.hand.splice(this.scoutplace[1].index, 0, this.candidate);
+                    this.candidate.holder = this;
+                }else if(this.scoutplace[0].index === 0){
+                    this.hand.unshift(this.candidate);
+                    this.candidate.holder = this;
+                }else if(this.scoutplace[0].index === this.hand.length-1){
+                    this.hand.push(this.candidate);
+                    this.candidate.holder = this;
+                }else{
+                    this.combination = {cards:[], valid:true, type:'', owner:this};
+                    this.candidate = '';
+                    this.scoutplace = []
+                    return;
+                }
+                for(let item of this.hand){
+                    item.index = this.hand.indexOf(item)
+                }
+                discard(this.candidate, game.fieldCards.cards);
+                display.myHand(this);
+                display.field();
+                game.fieldCards.owner.chip += 1
+                display.chip(game.fieldCards.owner)
+                if(this.action === ''){
+                    this.action = ''
+                    game.turnEnd()
+                }else{
+                    this.action = 'onlyplay'
+                }
+            }
+        }
+        this.combination = {cards:[], valid:true, type:'', owner:this};
+        this.candidate = '';
+        this.scoutplace = []
+    };
+    double(){
+        if(this.doubleAction === 1){
+            this.action = 'double'
+        }
+    };
+    reset(){
+        this.hand = [];
+        this.gain = 0;
+        this.combination = {cards:[], valid:true, type:'', owner:this};
+        this.doubleAction = 1;
+        this.chip = 0;
+        this.ready = false
     };
 }
 
@@ -191,10 +272,10 @@ while(t <= 9){
     t += 1;
 };
 
-const game = {allCards:allCards, usingCards:usingCards, players:players, round:0, fieldCards:fieldCards, turnPlayer:'', startPlayer:'', turn:0,
+const game = {allCards:allCards, usingCards:[], players:players, round:0, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0,
     deckMake(){
+        this.usingCards = []
         if(this.players.length === 3){
-            this.usingCards = []
             let i = 1;
             while(i <= this.allCards.length){
                 if(this.allCards[i-1].bottomNumber !== 10){
@@ -223,11 +304,12 @@ const game = {allCards:allCards, usingCards:usingCards, players:players, round:0
                 n = 9;
                 break;
         }
+        let arr = this.usingCards.slice(0, this.usingCards.length)
         for(let p of this.players){
             let i = 1;
             while(i <= n){
-                let randomNumber = Math.floor(Math.random()*this.usingCards.length);
-                let card = this.usingCards[randomNumber]
+                let randomNumber = Math.floor(Math.random()*arr.length);
+                let card = arr[randomNumber]
                 card.index = i-1
                 card.shuffle();
                 p.hand.push(card);
@@ -236,7 +318,7 @@ const game = {allCards:allCards, usingCards:usingCards, players:players, round:0
                     this.turnPlayer = p;
                     this.startPlayer = p;
                 }
-                this.usingCards.splice(randomNumber,1);
+                arr.splice(randomNumber,1);
                 i += 1;
             }
         }
@@ -262,19 +344,51 @@ const game = {allCards:allCards, usingCards:usingCards, players:players, round:0
     },
     turnEnd(){
         if(this.players.indexOf(this.turnPlayer) === this.players.length-1){
-            return this.players[0];
+            this.turnPlayer = this.players[0];
         } else {
-            return this.players[this.players.indexOf(this.turnPlayer)+1];
+            this.turnPlayer = this.players[this.players.indexOf(this.turnPlayer)+1];
         }
+        this.round += 1
     },
     start(){
         this.round += 1
+    },
+    reset(){
+        this.round = 0;
+        this.fieldCards = {cards:[], valid:true, type:'', owner:''};
+        this.turnPlayer = ''; 
+        this.startPlayer = '';
+        this.turn = 0;
     }
 };
 
 //画面表示
 const display = {
-    reloadHand(){
+    hidePlayer(){
+        let pn = game.players.length
+        while(pn <= 5){
+            $(`#player${pn+1}`).hide()
+            pn += 1
+        }
+    },
+    name(){
+        for(let p of game.players){
+            $(`#player${p.number}name`).html(`${p.name}`);
+            $(`#player${p.number}gain`).html(`得点札:${p.gain}`);
+            $(`#player${p.number}chip`).html(` チップ:${p.chip} `);
+            $(`#player${p.number}doubleaction`).html(`ダブルアクション:${p.doubleAction}`);
+        }
+    },
+    gain(p){
+        $(`#player${p.number}gain`).html(`得点札:${p.gain}`);
+    },
+    chip(p){
+        $(`#player${p.number}chip`).html(` チップ:${p.chip} `);
+    },
+    doubleaction(p){
+        $(`#player${p.number}doubleaction`).html(`ダブルアクションマーカー:${p.doubleAction}`);
+    },
+    allHands(){
         for(let p of game.players){
             $(`#player${p.number}hand`).html('')
             for(c of p.hand){
@@ -282,37 +396,98 @@ const display = {
             };
         };
     },
-    reloadField(){
+    myHand(p){
+        $(`#player${p.number}hand`).html('')
+        for(c of p.hand){
+            $(`#player${p.number}hand`).append(`<img src="./${c.name}.png" id="mycard${c.index}" class="card ${c.position}" alt="${c.name}">`);
+        };
+    },
+    field(){
         $('#field').html('')
         for(let item of game.fieldCards.cards){
             $('#field').append(`<img src="./${item.name}.png" id="fieldcard${item.index}" class="card ${item.position}" alt="${item.name}">`)
         }
     },
 }
+
 let taro = new Player('Taro', 1, '')
 let jiro = new Player('Jiro', 2, '')
 let saburo = new Player('Saburo', 3, '')
-game.deckMake()
-game.deal()
-display.reloadHand()
+display.name();
+game.deckMake();
+game.deal();
+display.allHands();
+display.hidePlayer()
+
+//手札を選択
 $('.hand').on('click', '.card',function(){
+    console.log('click')
+    const name = $(this).attr('alt')
+    console.log(name)
+    let thisCard = nameToCard(name)
+    console.log(thisCard)
+    if(thisCard.holder === game.turnPlayer){
+        game.turnPlayer.choiceScoutPlace(thisCard)
+        if(!thisCard.holder.combination.cards.includes(thisCard)){
+            $(this).css('background-color', 'red');
+            thisCard.holder.choice(thisCard);
+        }else{
+            $(this).css('background-color', '');
+            thisCard.holder.cancel(thisCard);
+        }
+        game.turnPlayer.checkCombination();
+    }
+})
+
+//スカウトするカードを選択
+$('#field').on('click', '.card', function(){
     const name = $(this).attr('alt')
     let thisCard = nameToCard(name)
-    if(!thisCard.holder.combination.cards.includes(thisCard)){
-        $(this).css('background-color', 'red')
-        thisCard.holder.choice(thisCard)
-    }else{
-        $(this).css('background-color', '')
-        thisCard.holder.cancel(thisCard)
+    if(thisCard === game.fieldCards.cards[0] || thisCard === game.fieldCards.cards[game.fieldCards.cards.length 
+        -1]){
+        game.turnPlayer.choiceCandidate(thisCard)
+        $('#field .card').css('background-color', '');
+        $(this).css('background-color', 'red');
     }
-    game.turnPlayer.checkCombination()
-})
-$('#play').on('click',function(){
-    game.turnPlayer.playCards();
-})
-$('#reverse').on('click',function(){
-    game.turnPlayer.reverseHand();
 })
 
+//カードを場に出す
+$('.playbutton').on('click',function(){
+    let n = Number($(this).data('playernumber'))
+    let p = game.players[n-1]
+    if(p === game.turnPlayer){
+        p.playCards();
+        $(`.card`).css('background-color', '')
+    }
+})
 
+//カードをひっくり返す
+$('.reversebutton').on('click',function(){
+    let n = Number($(this).data('playernumber'))
+    let p = game.players[n-1]
+    p.reverseHand();
+})
 
+//スカウトする
+$('.scoutbutton').on('click',function(){
+    let n = Number($(this).data('playernumber'))
+    let p = game.players[n-1]
+    if(p === game.turnPlayer){
+        p.scout();
+        $('.card').css('background-color', '');
+    };
+});
+
+//開始に同意する
+$('.startbutton').on('click',function(){
+    let n = Number($(this).data('playernumber'))
+    let p = game.players[n-1]
+    p.startOK();
+});
+
+//ダブルアクション
+$('.doublebutton').on('click',function(){
+    let n = Number($(this).data('playernumber'))
+    let p = game.players[n-1]
+    p.double();
+});

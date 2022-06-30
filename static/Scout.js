@@ -59,10 +59,11 @@ class Player{
         this.candidate
         this.scoutplace = [];
         this.action = '';
+        this.score = 0;
         players.push(this);
     };
     reverseHand(){
-        if(game.round === 0){
+        if(game.turn === 0){
             for(let card of this.hand){
                 card.reverse();
             };
@@ -173,7 +174,12 @@ class Player{
                 display.gain(this)
                 display.myHand(this);
                 display.field();
-                game.turnEnd()
+                if(this.hand.length === 0){
+                    game.winner = this
+                    game.roundEnd();
+                }else{
+                    game.turnEnd();
+                };
             };
         }
         this.combination = {cards:[], valid:true, type:'', owner:this};
@@ -274,7 +280,7 @@ while(t <= 9){
     t += 1;
 };
 
-const game = {allCards:allCards, usingCards:[], players:players, round:0, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0,
+const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0, active:true, winner:'',
     deckMake(){
         this.usingCards = []
         if(this.players.length === 3){
@@ -316,7 +322,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:0, fieldC
                 card.shuffle();
                 p.hand.push(card);
                 card.holder = p;
-                if(card.name === '1-2'){
+                if(card.name === '1-2' && this.round === 1){
                     this.turnPlayer = p;
                     this.startPlayer = p;
                 }
@@ -350,13 +356,43 @@ const game = {allCards:allCards, usingCards:[], players:players, round:0, fieldC
         } else {
             this.turnPlayer = this.players[this.players.indexOf(this.turnPlayer)+1];
         }
-        this.round += 1
+        this.turn += 1
     },
     start(){
+        this.turn += 1
+    },
+    roundEnd(){
+        this.active = false;
+        game.turnPlayer = '';
+        for(p of game.players){
+            if(game.winner === p){
+                p.score += p.gain + p.chip
+            }else{
+                p.score += p.gain + p.chip - p.hand.length
+            }
+            display.score(p)
+        }
+    },
+    nextRound(){
+        game.deckMake();
+        game.deal();
+        display.allHands();
+        this.active = true;
         this.round += 1
+        if(this.players.indexOf(this.startPlayer) === this.players.length-1){
+            this.startPlayer = this.players[0];
+        } else {
+            this.startPlayer = this.players[this.players.indexOf(this.startPlayer)+1];
+        }
+        this.turnPlayer = this.startPlayer;
+        this.turn = 0;
+        this.fieldCards = {cards: Array(0), valid: true, type: '', owner: ''}
+        this.winner = ''
+    },
+    gameEnd(){
+
     },
     reset(){
-        this.round = 0;
         this.fieldCards = {cards:[], valid:true, type:'', owner:''};
         this.turnPlayer = ''; 
         this.startPlayer = '';
@@ -376,19 +412,23 @@ const display = {
     name(){
         for(let p of game.players){
             $(`#player${p.number}name`).html(`${p.name}`);
-            $(`#player${p.number}gain`).html(`得点札:${p.gain}`);
-            $(`#player${p.number}chip`).html(` チップ:${p.chip} `);
-            $(`#player${p.number}doubleaction`).html(`ダブルアクション:${p.doubleAction}`);
+            this.gain(p);
+            this.chip(p);
+            this.doubleaction(p);
+            this.score(p);
         }
     },
     gain(p){
-        $(`#player${p.number}gain`).html(`得点札:${p.gain}`);
+        $(`#player${p.number}gain`).html(`得点札:${p.gain}  `);
     },
     chip(p){
-        $(`#player${p.number}chip`).html(` チップ:${p.chip} `);
+        $(`#player${p.number}chip`).html(`チップ:${p.chip}  `);
     },
     doubleaction(p){
-        $(`#player${p.number}doubleaction`).html(`ダブルアクション:${p.doubleAction}`);
+        $(`#player${p.number}doubleaction`).html(`ダブルアクション:${p.doubleAction}  `);
+    },
+    score(p){
+        $(`#player${p.number}score`).html(`得点:${p.score}`);
     },
     allHands(){
         for(let p of game.players){
@@ -492,4 +532,9 @@ $('.doublebutton').on('click',function(){
     let n = Number($(this).data('playernumber'))
     let p = game.players[n-1]
     p.double();
+});
+
+//次のラウンド
+$('#nextround').on('click',function(){
+    game.nextRound()
 });

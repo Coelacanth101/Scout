@@ -9,6 +9,7 @@
 </head>
 <body>
     <div class="container">
+        <button id="nextround">次のラウンドへ</button>
         <div id="field"></div>
         <div id="nameinputarea">
             <div class="playername">
@@ -35,53 +36,63 @@
         <div id="players">
             <div id="player1" class="player">
                 <div id="player1name" class="name"></div>
-                <div id="player1information" class="information"><p id="player1gain"></p><p id="player1chip"></p><p id="player1doubleaction"></p></div>
+                <div id="player1information" class="information"><p id="player1gain"></p><p id="player1chip"></p><p id="player1doubleaction"></p><p id="player1score"></p></div>
                 <div id="player1hand" class="hand"></div>
-                <button class="playbutton" data-playernumber="1">出す</button>
-                <button class="scoutbutton" data-playernumber="1">スカウト</button>
-                <button class="doublebutton" data-playernumber="1">ダブルアクション</button>
-                <button class="reversebutton" data-playernumber="1">ひっくり返す</button>
-                <button class="startbutton" data-playernumber="1">開始</button>
+                <div class="buttonarea">
+                    <button class="playbutton" data-playernumber="1">出す</button>
+                    <button class="scoutbutton" data-playernumber="1">スカウト</button>
+                    <button class="doublebutton" data-playernumber="1">ダブルアクション</button>
+                    <button class="reversebutton" data-playernumber="1">ひっくり返す</button>
+                    <button class="startbutton" data-playernumber="1">開始</button>
+                </div>
             </div>
             <div id="player2" class="player">
                 <div id="player2name" class="name"></div>
-                <div id="player2information" class="information"><p id="player2gain"></p><p id="player2chip"></p><p id="player2doubleaction"></p></div>
+                <div id="player2information" class="information"><p id="player2gain"></p><p id="player2chip"></p><p id="player2doubleaction"></p><p id="player2score"></p></div>
                 <div id="player2hand" class="hand"></div>
-                <button class="playbutton" data-playernumber="2">出す</button>
-                <button class="scoutbutton" data-playernumber="2">スカウト</button>
-                <button class="doublebutton" data-playernumber="2">ダブルアクション</button>
-                <button class="reversebutton" data-playernumber="2">ひっくり返す</button>
-                <button class="startbutton" data-playernumber="2">開始</button>
+                <div class="buttonarea">
+                    <button class="playbutton" data-playernumber="2">出す</button>
+                    <button class="scoutbutton" data-playernumber="2">スカウト</button>
+                    <button class="doublebutton" data-playernumber="2">ダブルアクション</button>
+                    <button class="reversebutton" data-playernumber="2">ひっくり返す</button>
+                    <button class="startbutton" data-playernumber="2">開始</button>
+                </div>
             </div>
             <div id="player3" class="player">
                 <div id="player3name" class="name"></div>
-                <div id="player3information" class="information"><p id="player3gain"></p><p id="player3chip"></p><p id="player3doubleaction"></p></div>
+                <div id="player3information" class="information"><p id="player3gain"></p><p id="player3chip"></p><p id="player3doubleaction"></p><p id="player3score"></p></div>
                 <div id="player3hand" class="hand"></div>
-                <button class="playbutton" data-playernumber="3">出す</button>
-                <button class="scoutbutton" data-playernumber="3">スカウト</button>
-                <button class="doublebutton" data-playernumber="3">ダブルアクション</button>
-                <button class="reversebutton" data-playernumber="3">ひっくり返す</button>
-                <button class="startbutton" data-playernumber="3">開始</button>
+                <div class="buttonarea">
+                    <button class="playbutton" data-playernumber="3">出す</button>
+                    <button class="scoutbutton" data-playernumber="3">スカウト</button>
+                    <button class="doublebutton" data-playernumber="3">ダブルアクション</button>
+                    <button class="reversebutton" data-playernumber="3">ひっくり返す</button>
+                    <button class="startbutton" data-playernumber="3">開始</button>
+                </div>
             </div>
             <div id="player4" class="player">
                 <div id="player4name" class="name"></div>
-                <div id="player4information" class="information"><p id="player4gain"></p><p id="player4chip"></p><p id="player4doubleaction"></p></div>
+                <div id="player4information" class="information"><p id="player4gain"></p><p id="player4chip"></p><p id="player4doubleaction"></p><p id="player4score"></p></div>
                 <div id="player4hand" class="hand"></div>
-                <button class="playbutton" data-playernumber="4">出す</button>
-                <button class="scoutbutton" data-playernumber="4">スカウト</button>
-                <button class="doublebutton" data-playernumber="4">ダブルアクション</button>
-                <button class="reversebutton" data-playernumber="4">ひっくり返す</button>
-                <button class="startbutton" data-playernumber="4">開始</button>
+                <div class="buttonarea">
+                    <button class="playbutton" data-playernumber="4">出す</button>
+                    <button class="scoutbutton" data-playernumber="4">スカウト</button>
+                    <button class="doublebutton" data-playernumber="4">ダブルアクション</button>
+                    <button class="reversebutton" data-playernumber="4">ひっくり返す</button>
+                    <button class="startbutton" data-playernumber="4">開始</button>
+                </div>
             </div>
             <div id="player5" class="player">
                 <div id="player5name" class="name"></div>
-                <div id="player5information" class="information"><p id="player5gain"></p><p id="player5chip"></p><p id="player5doubleaction"></p></div>
+                <div id="player5information" class="information"><p id="player5gain"></p><p id="player5chip"></p><p id="player5doubleaction"></p><p id="player5score"></p></div>
                 <div id="player5hand" class="hand"></div>
-                <button class="playbutton" data-playernumber="5">出す</button>
-                <button class="scoutbutton" data-playernumber="5">スカウト</button>
-                <button class="doublebutton" data-playernumber="5">ダブルアクション</button>
-                <button class="reversebutton" data-playernumber="5">ひっくり返す</button>
-                <button class="startbutton" data-playernumber="5">開始</button>
+                <div class="buttonarea">
+                    <button class="playbutton" data-playernumber="5">出す</button>
+                    <button class="scoutbutton" data-playernumber="5">スカウト</button>
+                    <button class="doublebutton" data-playernumber="5">ダブルアクション</button>
+                    <button class="reversebutton" data-playernumber="5">ひっくり返す</button>
+                    <button class="startbutton" data-playernumber="5">開始</button>
+                </div>
             </div>
         </div>
     </div>

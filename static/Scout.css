@@ -2,6 +2,7 @@
     max-width: 800px;
     height: 100%;
     margin: auto;
+    text-align:center;
 }
     #field{
         display: flex;
@@ -31,11 +32,18 @@
                 flex-wrap: wrap;
                 justify-content: center;
             }
-        .card{
-            width: 50px;
-            height: auto;
-            padding: 0.5%;
-        }
-        .reverse{
-            transform: rotate(180deg)
-        }
+                .card{
+                    width: 50px;
+                    height: auto;
+                    padding: 0.5%;
+                }
+                    .reverse{
+                        transform: rotate(180deg)
+                    }
+            .buttonarea{
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+    #nextround{
+    }

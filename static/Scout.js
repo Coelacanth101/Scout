@@ -246,6 +246,8 @@ class Player{
     double(){
         if(this.doubleAction === 1){
             this.action = 'double'
+            this.doubleAction -= 1
+            display.doubleaction(this)
         }
     };
     reset(){
@@ -386,7 +388,7 @@ const display = {
         $(`#player${p.number}chip`).html(` チップ:${p.chip} `);
     },
     doubleaction(p){
-        $(`#player${p.number}doubleaction`).html(`ダブルアクションマーカー:${p.doubleAction}`);
+        $(`#player${p.number}doubleaction`).html(`ダブルアクション:${p.doubleAction}`);
     },
     allHands(){
         for(let p of game.players){

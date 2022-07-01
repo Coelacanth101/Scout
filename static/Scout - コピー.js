@@ -211,6 +211,24 @@ class Player{
             }
         }
     };
+    scout(){
+        if(this.action !== 'onlyplay'){
+            if(this.candidate && this.scoutplace.length){
+                if(this.scoutplace.length === 2){
+                    display.stayOrReverse();
+                }else if(this.scoutplace[0].index === 0){
+                    display.stayOrReverse();
+                }else if(this.scoutplace[0].index === this.hand.length-1){
+                    display.stayOrReverse();
+                }else{
+                    display.backgroundDelete()
+                    this.combination = {cards:[], valid:true, type:'', owner:this};
+                    this.candidate = '';
+                    this.scoutplace = []
+                }
+            }
+        }
+    };
     stayScout(){
         if(this.action !== 'onlyplay'){
             if(this.candidate && this.scoutplace.length){
@@ -223,11 +241,6 @@ class Player{
                 }else if(this.scoutplace[0].index === this.hand.length-1){
                     this.hand.push(this.candidate);
                     this.candidate.holder = this;
-                }else{
-                    display.backgroundDelete()
-                    this.combination = {cards:[], valid:true, type:'', owner:this};
-                    this.candidate = '';
-                    this.scoutplace = []
                 }
                 for(let item of this.hand){
                     item.index = this.hand.indexOf(item)
@@ -248,6 +261,7 @@ class Player{
         this.combination = {cards:[], valid:true, type:'', owner:this};
         this.candidate = '';
         this.scoutplace = []
+        display.stayOrReverse();
     };
     reverseScout(){
         this.candidate.reverse()
@@ -262,11 +276,6 @@ class Player{
                 }else if(this.scoutplace[0].index === this.hand.length-1){
                     this.hand.push(this.candidate);
                     this.candidate.holder = this;
-                }else{
-                    display.backgroundDelete()
-                    this.combination = {cards:[], valid:true, type:'', owner:this};
-                    this.candidate = '';
-                    this.scoutplace = []
                 }
                 for(let item of this.hand){
                     item.index = this.hand.indexOf(item)
@@ -287,6 +296,7 @@ class Player{
         this.combination = {cards:[], valid:true, type:'', owner:this};
         this.candidate = '';
         this.scoutplace = [];
+        display.stayOrReverse();
     };
     double(){
         if(this.doubleAction === 1 && game.turnPlayer === this){
@@ -483,9 +493,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         this.deal();
         display.name();
         display.allHands();
-        display.hideItems();
-        display.startButton();
-        display.reverseButton();
+        display.hideItems();  
     },
     startCheck(){
         let s = true
@@ -510,12 +518,11 @@ const display = {
             $(`#player${pn+1}`).hide()
             pn += 1
         }
+        $('#stayorreverse').hide();
         $('#nextroundbutton').hide();
         $('#nameinputarea').hide();
         $('#newgamebutton').hide();
         $('#result').hide();
-        $('.startbutton').hide();
-        $('.reversebutton').hide();
     },
     name(){
         for(let p of game.players){
@@ -588,6 +595,9 @@ const display = {
     reverseButton(){
         $('.reversebutton').toggle()
     },
+    stayOrReverse(){
+        $('#stayorreverse').toggle()
+    },
     backgroundDelete(){
         $('.card').css('background-color', '');
     },
@@ -644,23 +654,23 @@ $('.reversebutton').on('click',function(){
     p.reverseHand();
 })
 
-//そのままスカウトする
-$('.stayscoutbutton').on('click',function(){
+//スカウトボタン
+$('.scoutbutton').on('click',function(){
     let n = Number($(this).data('playernumber'))
     let p = game.players[n-1]
     if(p === game.turnPlayer){
-        p.stayScout();
+        p.scout();
     };
+});
+//そのままスカウトする
+$('#stayscout').on('click',function(){
+    game.turnPlayer.stayScout();
     $('.card').css('background-color', '');
 });
 
 //ひっくり返してスカウトする
-$('.reversescoutbutton').on('click',function(){
-    let n = Number($(this).data('playernumber'))
-    let p = game.players[n-1]
-    if(p === game.turnPlayer){
-        p.reverseScout();
-    };
+$('#reversescout').on('click',function(){
+    game.turnPlayer.reverseScout();
     $('.card').css('background-color', '');
 });
 

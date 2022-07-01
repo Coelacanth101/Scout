@@ -41,9 +41,5 @@
                         transform: rotate(180deg)
                     }
             .buttonarea{
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
+                text-align:center;
             }
-    #nextround{
-    }

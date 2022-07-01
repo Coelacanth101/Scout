@@ -13,6 +13,10 @@
         <button id="nextroundbutton">次に進む</button>
         <button id="newgamebutton">もう一度遊ぶ</button>
         <div id="field"></div>
+        <div id="stayorreverse">
+            <button id="stayscout">そのまま</button>
+            <button id="reversescout">ひっくり返す</button>
+        </div>
         <div id="nameinputarea">
             <div class="playername">
                 <input type="text" class="nameinput" id="name0">
@@ -42,8 +46,7 @@
                 <div id="player1hand" class="hand"></div>
                 <div class="buttonarea">
                     <button class="playbutton" data-playernumber="1">出す</button>
-                    <button class="stayscoutbutton" data-playernumber="1">そのままスカウト</button>
-                    <button class="reversescoutbutton" data-playernumber="1">ひっくり返してスカウト</button>
+                    <button class="scoutbutton" data-playernumber="1">スカウト</button>
                     <button class="doublebutton" data-playernumber="1">ダブルアクション</button>
                     <button class="reversebutton" data-playernumber="1">ひっくり返す</button>
                     <button class="startbutton" data-playernumber="1">開始</button>
@@ -55,8 +58,7 @@
                 <div id="player2hand" class="hand"></div>
                 <div class="buttonarea">
                     <button class="playbutton" data-playernumber="2">出す</button>
-                    <button class="stayscoutbutton" data-playernumber="2">そのままスカウト</button>
-                    <button class="reversescoutbutton" data-playernumber="2">ひっくり返してスカウト</button>
+                    <button class="scoutbutton" data-playernumber="2">スカウト</button>
                     <button class="doublebutton" data-playernumber="2">ダブルアクション</button>
                     <button class="reversebutton" data-playernumber="2">ひっくり返す</button>
                     <button class="startbutton" data-playernumber="2">開始</button>
@@ -68,8 +70,7 @@
                 <div id="player3hand" class="hand"></div>
                 <div class="buttonarea">
                     <button class="playbutton" data-playernumber="3">出す</button>
-                    <button class="stayscoutbutton" data-playernumber="3">そのままスカウト</button>
-                    <button class="reversescoutbutton" data-playernumber="3">ひっくり返してスカウト</button>
+                    <button class="scoutbutton" data-playernumber="3">スカウト</button>
                     <button class="doublebutton" data-playernumber="3">ダブルアクション</button>
                     <button class="reversebutton" data-playernumber="3">ひっくり返す</button>
                     <button class="startbutton" data-playernumber="3">開始</button>
@@ -81,8 +82,7 @@
                 <div id="player4hand" class="hand"></div>
                 <div class="buttonarea">
                     <button class="playbutton" data-playernumber="4">出す</button>
-                    <button class="stayscoutbutton" data-playernumber="4">そのままスカウト</button>
-                    <button class="reversescoutbutton" data-playernumber="4">ひっくり返してスカウト</button>
+                    <button class="scoutbutton" data-playernumber="4">スカウト</button>
                     <button class="doublebutton" data-playernumber="4">ダブルアクション</button>
                     <button class="reversebutton" data-playernumber="4">ひっくり返す</button>
                     <button class="startbutton" data-playernumber="4">開始</button>
@@ -94,8 +94,7 @@
                 <div id="player5hand" class="hand"></div>
                 <div class="buttonarea">
                     <button class="playbutton" data-playernumber="5">出す</button>
-                    <button class="stayscoutbutton" data-playernumber="5">そのままスカウト</button>
-                    <button class="reversescoutbutton" data-playernumber="5">ひっくり返してスカウト</button>
+                    <button class="scoutbutton" data-playernumber="5">スカウト</button>
                     <button class="doublebutton" data-playernumber="5">ダブルアクション</button>
                     <button class="reversebutton" data-playernumber="5">ひっくり返す</button>
                     <button class="startbutton" data-playernumber="5">開始</button>

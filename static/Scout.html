@@ -14,28 +14,59 @@
         <button id="newgamebutton">もう一度遊ぶ</button>
         <div id="field"></div>
         <div id="nameinputarea">
-            <div class="playername">
-                <input type="text" class="nameinput" id="name0">
-                <input type="button" value="決定" class="namebutton">
+            <h1>名前を入力してください</h1>
+            <div class="player0">
+                <div class="playername">
+                    <input type="text" class="nameinput" data-namenumber="0">
+                    <input type="button" value="決定" class="namebutton">
+                </div>
             </div>
-            <div class="playername">
-                <input type="text" class="nameinput" id="name0">
+            
+            <div class="player1">
+                <div class="playername">
+                <input type="text" class="nameinput" data-namenumber="1">
                 <input type="button" value="決定" class="namebutton">
+                </div>
             </div>
-            <div class="playername">
-                <input type="text" class="nameinput" id="name0">
+            
+            <div class="player2">
+                <div class="playername">
+                <input type="text" class="nameinput" data-namenumber="2">
                 <input type="button" value="決定" class="namebutton">
+                </div>
             </div>
-            <div class="playername">
-                <input type="text" class="nameinput" id="name0">
+            
+
+            <div class="player3">
+                <div class="playername">
+                <input type="text" class="nameinput" data-namenumber="3">
                 <input type="button" value="決定" class="namebutton">
+                </div>
             </div>
-            <div class="playername">
-                <input type="text" class="nameinput" id="name0">
+            
+            <div class="player4">
+                <div class="playername">
+                <input type="text" class="nameinput" data-namenumber="4">
                 <input type="button" value="決定" class="namebutton">
+                </div>
             </div>
+            
         </div>
+        <button id="gamestartbutton">開始</button>
         <div id="players">
+            <div id="player0" class="player">
+                <div id="player0name" class="name"></div>
+                <div id="player0information" class="information"><p id="player0gain"></p><p id="player0chip"></p><p id="player0doubleaction"></p><p id="player0score"></p></div>
+                <div id="player0hand" class="hand"></div>
+                <div class="buttonarea">
+                    <button class="playbutton" data-playernumber="0">出す</button>
+                    <button class="stayscoutbutton" data-playernumber="0">そのままスカウト</button>
+                    <button class="reversescoutbutton" data-playernumber="0">ひっくり返してスカウト</button>
+                    <button class="doublebutton" data-playernumber="0">ダブルアクション</button>
+                    <button class="reversebutton" data-playernumber="0">ひっくり返す</button>
+                    <button class="startbutton" data-playernumber="0">開始</button>
+                </div>
+            </div>
             <div id="player1" class="player">
                 <div id="player1name" class="name"></div>
                 <div id="player1information" class="information"><p id="player1gain"></p><p id="player1chip"></p><p id="player1doubleaction"></p><p id="player1score"></p></div>
@@ -86,19 +117,6 @@
                     <button class="doublebutton" data-playernumber="4">ダブルアクション</button>
                     <button class="reversebutton" data-playernumber="4">ひっくり返す</button>
                     <button class="startbutton" data-playernumber="4">開始</button>
-                </div>
-            </div>
-            <div id="player5" class="player">
-                <div id="player5name" class="name"></div>
-                <div id="player5information" class="information"><p id="player5gain"></p><p id="player5chip"></p><p id="player5doubleaction"></p><p id="player5score"></p></div>
-                <div id="player5hand" class="hand"></div>
-                <div class="buttonarea">
-                    <button class="playbutton" data-playernumber="5">出す</button>
-                    <button class="stayscoutbutton" data-playernumber="5">そのままスカウト</button>
-                    <button class="reversescoutbutton" data-playernumber="5">ひっくり返してスカウト</button>
-                    <button class="doublebutton" data-playernumber="5">ダブルアクション</button>
-                    <button class="reversebutton" data-playernumber="5">ひっくり返す</button>
-                    <button class="startbutton" data-playernumber="5">開始</button>
                 </div>
             </div>
         </div>

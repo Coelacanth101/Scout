@@ -1,6 +1,240 @@
-/*const socket = io();*/
+const socket = io();
 let allCards = [];
 let players = [];
+
+//名前の入力発信
+$('#nameinputarea').on('click', '.namebutton', function(){
+    if($(this).prev().val()){
+        myName = $(this).prev().val()
+        let nameNumber = Number($(this).prev().data('namenumber'));
+        namedata = {name:myName, number:nameNumber, socketID:socket.id}
+        socket.emit("nameInput", namedata)
+    }
+})
+
+//名前の入力受信
+socket.on("nameInput", (namedata)=>{
+    $(`.player${namedata.number}`).html(`<p><strong>${namedata.name}</strong></p>`)
+})
+
+//スタートボタンクリック発信
+$('#gamestartbutton').on('click', function(){
+    let e
+    socket.emit('start', e)
+})
+
+//入力済みの名前表示
+socket.on('nameDisplay', (playersName)=>{
+    let i = 1
+    for(let player of playersName){
+        if(player.name){
+            $(`.player${playersName.indexOf(player)}`).html(`<p><strong>${player.name}</strong></p>`)
+        }
+        i += 1
+    }
+})
+
+socket.on('hideItems', (nop)=>{
+    display.hideItems(nop)
+});
+socket.on('name', (players)=>{
+    display.name(players)
+});
+socket.on('gain', (player)=>{
+    display.gain(player)
+});
+socket.on('chip', (player)=>{
+    display.chip(player)
+});
+socket.on('doubleaction', (player)=>{
+    display.doubleaction(player)
+});
+socket.on('score', (player)=>{
+    display.score(player)
+});
+socket.on('allHands', (players)=>{
+    display.allHands(players)
+});
+socket.on('myHand', (player)=>{
+    display.myHand(player)
+});
+socket.on('field', (cards)=>{
+    display.field(cards)
+});
+socket.on('nextButton', ()=>{
+    display.nextButton()
+});
+socket.on('roundResult', (data)=>{
+    display.roundResult(data)
+});
+socket.on('matchResult', (data)=>{
+    display.matchResult(data)
+});
+socket.on('hideResult', ()=>{
+    display.hideResult()
+});
+socket.on('startButton', ()=>{
+    display.startButton()
+});
+socket.on('reverseButton', ()=>{
+    display.reverseButton()
+});
+socket.on('backgroundDelete', ()=>{
+    display.backgroundDelete()
+});
+
+//画面表示
+const display = {
+    hideItems(pn){
+        while(pn <= 5){
+            $(`#player${pn+1}`).hide()
+            pn += 1
+        }
+        $('#nextroundbutton').hide();
+        $('#nameinputarea').hide();
+        $('#newgamebutton').hide();
+        $('#result').hide();
+        $('.startbutton').hide();
+        $('.reversebutton').hide();
+    },
+    name(players){
+        console.log('receivenamea')
+        console.log(players)
+       for(let p of players){
+            $(`#player${p.number}name`).html(`${p.name}`);
+            this.gain(p);
+            this.chip(p);
+            this.doubleaction(p);
+            this.score(p);
+        }
+    },
+    gain(player){
+        $(`#player${player.number}gain`).html(`得点札:${player.gain}  `);
+    },
+    chip(player){
+        $(`#player${player.number}chip`).html(`チップ:${player.chip}  `);
+    },
+    doubleaction(player){
+        $(`#player${player.number}doubleaction`).html(`ダブルアクション:${player.doubleAction}  `);
+    },
+    score(player){
+        $(`#player${player.number}score`).html(`得点:${player.score}`);
+    },
+    allHands(players){
+        for(let p of players){
+            $(`#player${p.number}hand`).html('')
+            if(p.socketID === socket.id){
+                for(c of p.hand){
+                    $(`#player${p.number}hand`).append(`<img src="./${c.name}.png" id="player${p.number}card${c.index}" class="card ${c.position}" alt="${c.name}">`);
+                };
+            }else{
+                for(c of p.hand){
+                    $(`#player${p.number}hand`).append(`<img src="./back.png" id="player${p.number}card${c.index}"`);
+                }
+            }
+        };
+    },
+    myHand(player){
+        $(`#player${player.number}hand`).html('')
+        if(player.socketID === socket.id){
+            for(c of player.hand){
+                $(`#player${player.number}hand`).append(`<img src="./${c.name}.png" id="player${player.number}card${c.index}" class="card ${c.position}" alt="${c.name}">`);
+            };
+        }else{
+            for(c of player.hand){
+                $(`#player${player.number}hand`).append(`<img src="./back.png" id="player${player.number}card${c.index}"`);
+            }
+        }
+    },
+    field(cards){
+        $('#field').html('')
+        for(let item of cards){
+            $('#field').append(`<img src="./${item.name}.png" id="fieldcard${item.index}" class="card ${item.position}" alt="${item.name}">`)
+        }
+    },
+    nextButton(){
+        $('#nextroundbutton').toggle()
+    },
+    roundResult(data){
+        $('#result').show();
+        $('#result').html('')
+        $('#result').html(`<div>${data.round}ラウンド終了</div>`)
+        for(let p of data.players){
+            $('#result').append(`<div>${p.name}:${p.lastscore}点</div>`)
+        }
+    },
+    matchResult(data){
+        $('#result').show();
+        $('#result').html('');
+        $('#result').html(`<div>${data.championname}の勝ちです。</div>`)
+        for(let p of data.players){
+            $('#result').append(`<div>${p.name}:${p.score}点</div>`)
+        }
+        $('#field').hide();
+        $('#newgamebutton').show()
+    },
+    hideResult(){
+        $('#result').hide();
+    },
+    startButton(){
+        $('.startbutton').toggle()
+    },
+    reverseButton(){
+        $('.reversebutton').toggle()
+    },
+    backgroundDelete(){
+        $('.card').css('background-color', '');
+    },
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //リストから削除
 function discard(item,list){
     if(list.includes(item)){
@@ -61,7 +295,6 @@ class Player{
         this.action = '';
         this.score = 0;
         this.lastScore = 0;
-        players.push(this);
     };
     reverseHand(){
         if(game.turn === 0){
@@ -334,269 +567,6 @@ while(t <= 9){
     };
     t += 1;
 };
-
-const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0, active:true, winner:'',champion:'',
-    deckMake(){
-        this.usingCards = []
-        if(this.players.length === 3){
-            let i = 1;
-            while(i <= this.allCards.length){
-                if(this.allCards[i-1].bottomNumber !== 10){
-                    this.usingCards.push(this.allCards[i-1]);
-                }
-                i += 1;
-            };
-        };
-        if(this.players.length === 4){
-            this.usingCards = this.allCards.slice(0, this.allCards.length-1)
-        }
-        if(this.players.length === 5){
-            this.usingCards = this.allCards.slice(0, this.allCards.length)
-        }
-    },
-    deal(){
-        let n;
-        switch(this.players.length){
-            case 3:
-                n = 12;
-                break;
-            case 4:
-                n = 11;
-                break;
-            case 5:
-                n = 9;
-                break;
-        }
-        let arr = this.usingCards.slice(0, this.usingCards.length)
-        for(let p of this.players){
-            let i = 1;
-            while(i <= n){
-                let randomNumber = Math.floor(Math.random()*arr.length);
-                let card = arr[randomNumber]
-                card.index = i-1
-                card.shuffle();
-                p.hand.push(card);
-                card.holder = p;
-                if(card.name === '1-2' && this.round === 1){
-                    this.startPlayer = p;
-                }
-                arr.splice(randomNumber,1);
-                i += 1;
-            }
-        }
-    },
-    combiJudge(p, f){
-        if(p.cards.length !== 0){
-            if(p.cards.length < f.cards.length){
-                return false;
-            }else if(p.cards.length > f.cards.length){
-                return true;
-            }else if(p.type === 'sequence' && f.type === 'set'){
-                return false;
-            }else if(p.type === 'set' && f.type === 'sequence'){
-                return true;
-            }else if(p.cards[0].number > f.cards[0].number){
-                return true
-            }else{
-                return false;
-            }
-        }else{
-            return false;
-        }
-    },
-    turnEnd(){
-        if(this.players.indexOf(this.turnPlayer) === this.players.length-1){
-            this.turnPlayer = this.players[0];
-        } else {
-            this.turnPlayer = this.players[this.players.indexOf(this.turnPlayer)+1];
-        }
-        this.turn += 1
-        if(this.fieldCards.owner === this.turnPlayer){
-            this.winner = this.turnPlayer
-            this.roundEnd();
-        }
-    },
-    roundEnd(){
-        this.active = false;
-        this.turn = 0;
-        game.turnPlayer = '';
-        for(let p of game.players){
-            if(this.winner === p){
-                p.score += p.gain + p.chip
-                p.lastscore = p.gain + p.chip
-            }else{
-                p.score += p.gain + p.chip - p.hand.length
-                p.lastscore = p.gain + p.chip - p.hand.length
-            }
-            display.score(p)
-        }
-        display.roundResult()
-        display.nextButton()
-    },
-    nextRound(){
-        if(this.round === this.players.length){
-            this.matchEnd();
-            return
-        }
-        this.active = true;
-        this.round += 1
-        if(this.players.indexOf(this.startPlayer) === this.players.length-1){
-            this.startPlayer = this.players[0];
-        } else {
-            this.startPlayer = this.players[this.players.indexOf(this.startPlayer)+1];
-        }
-        this.turnPlayer = this.startPlayer;
-        this.fieldCards = {cards: Array(0), valid: true, type: '', owner: ''}
-        this.winner = '';
-        for(let p of this.players){
-            p.reset();
-        }
-        this.deckMake();
-        this.deal();
-        display.allHands();
-        display.startButton();
-        display.reverseButton();
-        display.field()
-    },
-    matchEnd(){
-        this.champion =''
-        for(let p of this.players){
-            if(this.champion === ''){
-                this.champion = p
-            }else if(p.score > this.champion.score){
-                this.champion = p
-            }
-        };
-        display.matchResult();
-    },
-    reset(){
-        this.fieldCards = {cards:[], valid:true, type:'', owner:''};
-        this.turnPlayer = ''; 
-        this.startPlayer = '';
-        this.turn = 0;
-    },
-    newGame(){
-        for(let p of this.players){
-            p.newGame();
-        }
-        this.deckMake();
-        this.deal();
-        display.name();
-        display.allHands();
-        display.hideItems();
-        display.startButton();
-        display.reverseButton();
-    },
-    startCheck(){
-        let s = true
-        for(let p of this.players){
-            if(p.ready === false){
-                s = false;
-            }
-        }
-        if(s === true){
-            this.turn += 1;
-            this.turnPlayer = this.startPlayer;
-        }
-    },
-
-};
-
-//画面表示
-const display = {
-    hideItems(){
-        let pn = game.players.length
-        while(pn <= 5){
-            $(`#player${pn+1}`).hide()
-            pn += 1
-        }
-        $('#nextroundbutton').hide();
-        $('#nameinputarea').hide();
-        $('#newgamebutton').hide();
-        $('#result').hide();
-        $('.startbutton').hide();
-        $('.reversebutton').hide();
-    },
-    name(){
-        for(let p of game.players){
-            $(`#player${p.number}name`).html(`${p.name}`);
-            this.gain(p);
-            this.chip(p);
-            this.doubleaction(p);
-            this.score(p);
-        }
-    },
-    gain(p){
-        $(`#player${p.number}gain`).html(`得点札:${p.gain}  `);
-    },
-    chip(p){
-        $(`#player${p.number}chip`).html(`チップ:${p.chip}  `);
-    },
-    doubleaction(p){
-        $(`#player${p.number}doubleaction`).html(`ダブルアクション:${p.doubleAction}  `);
-    },
-    score(p){
-        $(`#player${p.number}score`).html(`得点:${p.score}`);
-    },
-    allHands(){
-        for(let p of game.players){
-            $(`#player${p.number}hand`).html('')
-            for(c of p.hand){
-                $(`#player${p.number}hand`).append(`<img src="./${c.name}.png" id="mycard${c.index}" class="card ${c.position}" alt="${c.name}">`);
-            };
-        };
-    },
-    myHand(p){
-        $(`#player${p.number}hand`).html('')
-        for(c of p.hand){
-            $(`#player${p.number}hand`).append(`<img src="./${c.name}.png" id="mycard${c.index}" class="card ${c.position}" alt="${c.name}">`);
-        };
-    },
-    field(){
-        $('#field').html('')
-        for(let item of game.fieldCards.cards){
-            $('#field').append(`<img src="./${item.name}.png" id="fieldcard${item.index}" class="card ${item.position}" alt="${item.name}">`)
-        }
-    },
-    nextButton(){
-        $('#nextroundbutton').toggle()
-    },
-    roundResult(){
-        $('#result').show();
-        $('#result').html('')
-        $('#result').html(`<div>${game.round}ラウンド終了</div>`)
-        for(let p of game.players){
-            $('#result').append(`<div>${p.name}:${p.lastscore}点</div>`)
-        }
-    },
-    matchResult(){
-        $('#result').show();
-        $('#result').html('');
-        $('#result').html(`<div>${game.champion.name}の勝ちです。</div>`)
-        for(let p of game.players){
-            $('#result').append(`<div>${p.name}:${p.score}点</div>`)
-        }
-        $('#field').hide();
-        $('#newgamebutton').show()
-    },
-    hideResult(){
-        $('#result').hide();
-    },
-    startButton(){
-        $('.startbutton').toggle()
-    },
-    reverseButton(){
-        $('.reversebutton').toggle()
-    },
-    backgroundDelete(){
-        $('.card').css('background-color', '');
-    },
-}
-
-let taro = new Player('Taro', 1, '')
-let jiro = new Player('Jiro', 2, '')
-let saburo = new Player('Saburo', 3, '')
-game.newGame()
 
 //手札を選択
 $('.hand').on('click', '.card',function(){

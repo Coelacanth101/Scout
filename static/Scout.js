@@ -99,8 +99,10 @@ socket.on('startbuttonclick', (n)=>{
 });
 socket.on('fieldcardred', (card)=>{
     display.fieldCardRed(card)
-})
-
+});
+socket.on('fieldcarddelete', (card)=>{
+    display.fieldCardDelete(card)
+});
 socket.on('initializebuttonclick', ()=>{
     display.initialize()
 })
@@ -319,12 +321,15 @@ const display = {
         $(`#startbutton${n}`).hide();
         $(`#reversebutton${n}`).hide();
     },
-    fieldCardDelete(){
+    fieldCardsDelete(){
         $('#field').children().css('background-color', '');
     },
     fieldCardRed(card){
-        this.fieldCardDelete()
+        this.fieldCardsDelete()
         $(`#fieldcard${card.index}`).css('background-color', 'red');
+    },
+    fieldCardDelete(card){
+        $(`#fieldcard${card.index}`).css('background-color', '');
     },
     initialize(){
         $('#gamestartbutton').show()

@@ -108,6 +108,7 @@ class Player{
   checkCombination(){
       if(this.combination.cards.length >= 2){
           //隣り合ったカードか確認
+          this.combination.valid = true;
           let i = 1
           while(i <= this.combination.cards.length-1){
               if(this.combination.cards[i].index !== this.combination.cards[i-1].index + 1 && this.combination.cards[i].index !== this.combination.cards[i-1].index - 1){
@@ -127,8 +128,10 @@ class Player{
               i += 1;
           }
           if(this.combination.valid === true){
+            console.log('a')
               this.combination.type = 'set'
           }else{
+            console.log('b')
               this.combination.valid = true
               //昇順か確認
               i = 1;
@@ -140,6 +143,7 @@ class Player{
                   i += 1;
               };
               if(this.combination.valid === true){
+
                   this.combination.type = 'sequence'
               }else{
                   this.combination.valid = true
@@ -147,6 +151,7 @@ class Player{
                   i = 1;
                   while(i <= this.combination.cards.length-1){
                       if(this.combination.cards[i].number !== this.combination.cards[i-1].number - 1){
+                        console.log('ag')
                           this.combination.valid = false;
                           this.combination.type = ''
                       }
@@ -158,9 +163,11 @@ class Player{
               }
           }
       }else if(this.combination.cards.length === 1){
+        console.log('e')
           this.combination.type = 'single'
           this.combination.valid = true
       }else{
+        console.log('f')
           this.combination.type = ''
           this.combination.valid = false;
       }
@@ -232,6 +239,8 @@ class Player{
           display.fieldCardRed(fc)
       }else{
           this.candidate = '';
+          let fc = server.copyOfCard(card)
+          display.fieldCardDelete(fc)
       }
   };
   choiceScoutPlace(card){
@@ -470,6 +479,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         for(let p of this.players){
             p.newGame();
         }
+        this.fieldCards = {cards:[], valid:true, type:'', owner:''}
         this.deckMake();
         this.deal();
         display.name();
@@ -547,7 +557,6 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
 const display = {
   hideItems(){
     let nop = game.players.length
-    console.log(nop)
     io.emit('hideItems', nop);
   },
   name(){
@@ -652,6 +661,9 @@ const display = {
   },
   fieldCardRed(card){
     io.emit('fieldcardred', card)
+  },
+  fieldCardDelete(card){
+    io.emit('fieldcarddelete', card);
   },
   initialize(){
     let a = ''
@@ -761,42 +773,25 @@ io.on("connection", (socket)=>{
 
   //手札を選択
   socket.on('handclick', (data)=>{
-    console.log('1')
     let thisCard = server.nameToCard(data.cardName)
-    console.log('2')
-    console.log(game.allCards)
-    console.log(game.usingCards)
-    console.log(thisCard)
-    console.log(thisCard.holder)
-    console.log(thisCard.holder.name)
-    console.log(game.turnPlayer.name)
-    console.log(game.turn)
-    console.log(data.socketID)
-    console.log(thisCard.holder.socketID)
     if(thisCard.holder === game.turnPlayer && game.turn !== 0 && data.socketID === thisCard.holder.socketID){
-      console.log('3')
       game.turnPlayer.choiceScoutPlace(thisCard)
-      console.log('4')
       if(!thisCard.holder.combination.cards.includes(thisCard)){
-        console.log('5')
           let card = {holderNumber:'', index:''}
           card.holderNumber = thisCard.holder.number
           card.index = thisCard.index
           display.backgroundRed(card)
           thisCard.holder.choice(thisCard);
-          console.log('6')
       }else{
-        console.log('7')
           let card = {holderNumber:'', index:''}
           card.holderNumber = thisCard.holder.number
           card.index = thisCard.index
           display.backgroundDelete(card)
           thisCard.holder.cancel(thisCard);
-          console.log('8')
       }
-      console.log('9')
-      console.log(game.fieldCards.cards)
       game.turnPlayer.checkCombination();
+      console.log(game.turnPlayer.combination.type)
+      console.log(game.turnPlayer.combination.valid)
   }
   });
 
@@ -813,7 +808,6 @@ io.on("connection", (socket)=>{
     let n = player.number
     let p = game.players[n]
     p.playCards();
-    console.log(game.fieldCards.cards)
   })
 
   //カードをひっくり返す

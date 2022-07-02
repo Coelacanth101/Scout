@@ -198,6 +198,11 @@ $('#newgamebutton').on('click',function(){
 const display = {
     hideItems(nop){
         console.log(nop)
+        let i = 1
+        while(i <= 5){
+            $(`#player${i-1}`).show()
+            i += 1
+        }
         while(nop <= 4){
             $(`#player${nop}`).hide()
             nop += 1

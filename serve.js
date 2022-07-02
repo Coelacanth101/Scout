@@ -523,7 +523,11 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
       };
     },
     initialize(){
-      playersName = ['','','','',''];
+      let i = 1
+      while(i <= 5){
+        playersName[i-1] = ''
+        i += 1
+      }
       allCards.length = 0;
       players.length = 0;
       this.usingCards = [];
@@ -744,7 +748,11 @@ io.on("connection", (socket)=>{
     nop = playersName.length;
     if(nop >= 3){
       game.gameStart()
-      playersName = ['','','','','']
+      let i = 1
+      while(i <= 5){
+        playersName[i-1] = ''
+        i += 1
+      }
     }else{
       playersName = arr
     }

@@ -547,6 +547,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
 const display = {
   hideItems(){
     let nop = game.players.length
+    console.log(nop)
     io.emit('hideItems', nop);
   },
   name(){

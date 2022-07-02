@@ -197,6 +197,7 @@ $('#newgamebutton').on('click',function(){
 //画面表示
 const display = {
     hideItems(nop){
+        console.log(nop)
         while(nop <= 4){
             $(`#player${nop}`).hide()
             nop += 1

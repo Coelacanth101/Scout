@@ -53,7 +53,7 @@
             
         </div>
         <button id="gamestartbutton">開始</button>
-        <div id="players">
+        <div id="players" display="none">
             <div id="player0" class="player">
                 <div id="player0name" class="name"></div>
                 <div id="player0information" class="information"><p id="player0gain"></p><p id="player0chip"></p><p id="player0doubleaction"></p><p id="player0score"></p></div>
@@ -120,6 +120,7 @@
                 </div>
             </div>
         </div>
+        <button id="initializebutton">初期化</button>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./jquery-3.4.1.min.js"></script>

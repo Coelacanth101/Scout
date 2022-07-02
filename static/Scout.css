@@ -4,15 +4,20 @@
     margin: auto;
     text-align:center;
 }
+    #nextroundbutton{
+        display: none;
+    }
+    #newgamebutton{
+        display: none;
+    }
     #field{
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
     }
-    #nameinputarea{
-    }
     #players{
         margin: auto;
+        display: none;
     }
         .player{
             margin: auto;

@@ -2,9 +2,11 @@ const socket = io();
 let allCards = [];
 let players = [];
 
-$('#nextroundbutton').hide();
-$('#newgamebutton').hide();
-
+//画面初期化
+$('#initializebutton').on('click', function(){
+    let e =''
+    socket.emit('initializebuttonclick', e)
+})
 
 //名前の入力発信
 $('#nameinputarea').on('click', '.namebutton', function(){
@@ -99,12 +101,19 @@ socket.on('fieldcardred', (card)=>{
     display.fieldCardRed(card)
 })
 
+socket.on('initializebuttonclick', ()=>{
+    display.initialize()
+})
+
 
 //手札を選択
 $('.hand').on('click', '.card',function(){
-    const cardName = $(this).attr('alt')
-    let data = {cardName:cardName, socketID:socket.id}
-    socket.emit('handclick', data)
+    if($(this).parent().parent().data('socketid') === socket.id){
+        const cardName = $(this).attr('alt')
+        let data = {cardName:cardName, socketID:socket.id}
+        socket.emit('handclick', data)
+    }
+    
 })
 
 //開始に同意する
@@ -197,8 +206,10 @@ const display = {
         $('#newgamebutton').hide();
         $('#nameinputarea').hide();
         $('#result').hide();
+        $('#field').show()
         $('.startbutton').hide()
         $('.reversebutton').hide();
+        $('#players').show();
     },
     name(players){
         for(let p of players){
@@ -308,5 +319,25 @@ const display = {
     fieldCardRed(card){
         this.fieldCardDelete()
         $(`#fieldcard${card.index}`).css('background-color', 'red');
+    },
+    initialize(){
+        $('#gamestartbutton').show()
+        $('#nextroundbutton').hide();
+        $('#newgamebutton').hide();
+        $('#nameinputarea').show();
+        $('#field').hide()
+        $('#result').hide();
+        $('#players').hide();
+        $('#nameinputarea').html('<h1>名前を入力してください</h1>')
+        let i = 1
+        while(i <= 5){
+            $('#nameinputarea').append(`<div class="player${i-1}">
+                <div class="playername">
+                    <input type="text" class="nameinput" data-namenumber="${i-1}">
+                    <input type="button" value="決定" class="namebutton">
+                </div>
+            </div>`)
+            i += 1
+        }
     }
 }

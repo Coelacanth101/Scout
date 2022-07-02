@@ -249,24 +249,18 @@ class Player{
   };
   stayScout(){
       display.backgroundAllDelete()
-      console.log('1')
       if(this.action !== 'onlyplay'){
-        console.log('2')
           if(this.candidate && this.scoutplace.length){
               if(this.scoutplace.length === 2){
-                console.log('3')
                   this.hand.splice(this.scoutplace[1].index, 0, this.candidate);
                   this.candidate.holder = this;
               }else if(this.scoutplace[0].index === 0){
-                console.log('4')
                   this.hand.unshift(this.candidate);
                   this.candidate.holder = this;
               }else if(this.scoutplace[0].index === this.hand.length-1){
-                console.log('51')
                   this.hand.push(this.candidate);
                   this.candidate.holder = this;
               }else{
-                console.log('6')
                   this.combination = {cards:[], valid:true, type:'', owner:this};
                   this.candidate = '';
                   this.scoutplace = []
@@ -276,30 +270,19 @@ class Player{
               for(let item of this.hand){
                   item.index = this.hand.indexOf(item)
               }
-              
-              console.log('7')
               server.discard(this.candidate, game.fieldCards.cards);
-              console.log('8')
               display.myHand(server.copyOf(this));
-              console.log('9')
               display.field();
-              console.log('10')
               game.fieldCards.owner.chip += 1
-              console.log('11')
               display.chip(server.copyOf(game.fieldCards.owner))
-              console.log('12')
               if(this.action === ''){
-                console.log('13')
                   this.action = ''
                   game.turnEnd()
               }else{
-                console.log('14')
                   this.action = 'onlyplay'
               }
           }
       }
-      
-      console.log('15')
       this.combination = {cards:[], valid:true, type:'', owner:this};
       this.candidate = '';
       this.scoutplace = []
@@ -413,24 +396,18 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         }
     },
     turnEnd(){
-      console.log('414')
         if(this.players.indexOf(this.turnPlayer) === this.players.length-1){
-          console.log('416')
             this.turnPlayer = this.players[0];
         } else {
-          console.log('419')
             this.turnPlayer = this.players[this.players.indexOf(this.turnPlayer)+1];
         }
-        console.log('422')
         this.turn += 1
         if(this.fieldCards.owner === this.turnPlayer){
-          console.log('425')
             this.winner = this.turnPlayer
             this.roundEnd();
         }
     },
     roundEnd(){
-      console.log('431')
         this.active = false;
         this.turn = 0;
         game.turnPlayer = '';
@@ -442,12 +419,9 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
                 p.score += p.gain + p.chip - p.hand.length
                 p.lastScore = p.gain + p.chip - p.hand.length
             }
-            console.log('443')
             display.score(server.copyOf(p))
         }
-        console.log('446')
         display.roundResult()
-        console.log('448')
         display.nextButton()
     },
     nextRound(){
@@ -529,6 +503,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         }
     },
     gameStart(){
+        this.phase = 'playing'
         this.playerMake();
         this.cardMake();
         this.newGame();
@@ -546,7 +521,23 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         };
         t += 1;
       };
-    }
+    },
+    initialize(){
+      playersName = ['','','','',''];
+      allCards.length = 0;
+      players.length = 0;
+      this.usingCards = [];
+      this.players = players;
+      this.round = 1
+      this.fieldCards = {cards:[], valid:true, type:'', owner:''}
+      this.turnPlayer = ''
+      this.startPlayer = ''
+      this.turn = 0
+      this.active = true
+      this.winner = ''
+      this.champion = ''
+      this.phase = 'nameinputting';
+    },
 };
 
 const display = {
@@ -656,6 +647,10 @@ const display = {
   },
   fieldCardRed(card){
     io.emit('fieldcardred', card)
+  },
+  initialize(){
+    let a = ''
+    io.emit('initializebuttonclick',a)
   }
 }
 
@@ -724,9 +719,10 @@ io.on("connection", (socket)=>{
   if(game.phase === 'nameinputting'){
     io.to(socket.id).emit("nameDisplay", (playersName));
   }else{
-    io.to(socket.id).emit('newGame', players);
-    io.to(socket.id).emit('playerDisplay', players);
-    io.to(socket.id).emit('reload', players);
+    display.name();
+    display.allHands();
+    display.hideItems();
+    display.field()
   }
   
   //名前の入力
@@ -756,22 +752,41 @@ io.on("connection", (socket)=>{
 
   //手札を選択
   socket.on('handclick', (data)=>{
+    console.log('1')
     let thisCard = server.nameToCard(data.cardName)
+    console.log('2')
+    console.log(game.allCards)
+    console.log(game.usingCards)
+    console.log(thisCard)
+    console.log(thisCard.holder)
+    console.log(thisCard.holder.name)
+    console.log(game.turnPlayer.name)
+    console.log(game.turn)
+    console.log(data.socketID)
+    console.log(thisCard.holder.socketID)
     if(thisCard.holder === game.turnPlayer && game.turn !== 0 && data.socketID === thisCard.holder.socketID){
+      console.log('3')
       game.turnPlayer.choiceScoutPlace(thisCard)
+      console.log('4')
       if(!thisCard.holder.combination.cards.includes(thisCard)){
+        console.log('5')
           let card = {holderNumber:'', index:''}
           card.holderNumber = thisCard.holder.number
           card.index = thisCard.index
           display.backgroundRed(card)
           thisCard.holder.choice(thisCard);
+          console.log('6')
       }else{
+        console.log('7')
           let card = {holderNumber:'', index:''}
           card.holderNumber = thisCard.holder.number
           card.index = thisCard.index
           display.backgroundDelete(card)
           thisCard.holder.cancel(thisCard);
+          console.log('8')
       }
+      console.log('9')
+      console.log(game.fieldCards.cards)
       game.turnPlayer.checkCombination();
   }
   });
@@ -789,6 +804,7 @@ io.on("connection", (socket)=>{
     let n = player.number
     let p = game.players[n]
     p.playCards();
+    console.log(game.fieldCards.cards)
   })
 
   //カードをひっくり返す
@@ -847,5 +863,11 @@ io.on("connection", (socket)=>{
   //もう一度遊ぶ
   socket.on('newgamebuttonclick', (e)=>{
     game.newGame();
+  })
+
+  //初期化
+  socket.on('initializebuttonclick', (e)=>{
+    display.initialize()
+    game.initialize()
   })
 })

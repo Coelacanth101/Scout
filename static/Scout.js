@@ -378,6 +378,6 @@ const display = {
     },
     takeOver(player){
         console.log('takeover')
-        $(`#player${player.number}`).data('socketid') = player.socketID
+        $(`#player${player.number}`).data('socketid', player.socketID)
     }
 }

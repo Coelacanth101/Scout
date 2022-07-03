@@ -563,6 +563,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
       this.phase = 'nameinputting';
     },
     takeOver(player){
+      display.log('566')
       this.players[player.number].socketID = player.socketId
     }
 };
@@ -687,6 +688,7 @@ const display = {
     io.emit('turnplayer', tn)
   },
   takeOver(player){
+    display.log('691')
     io.emit('takeoverbuttonclick', player)
   },
   log(a){
@@ -900,13 +902,10 @@ io.on("connection", (socket)=>{
   socket.on('takeoverbuttonclick', (player)=>{
     display.log('1')
     display.takeOver(player)
-    display.log('2')
     game.takeOver(player)
-    display.log('3')
     let p = game.players[player.number]
     p = server.copyOf(p)
     display.myHand(p)
-    display.log('4')
   })
 
 

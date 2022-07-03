@@ -357,7 +357,7 @@ const display = {
     turnPlayer(tn){
         let i = 0;
         while(i <= 4){
-            $(`#player${i}`).css('border', '');
+            $(`#player${tn}`).css('border', '0px');
             i += 1
         }
         $(`#player${tn}`).css('border', '5px');

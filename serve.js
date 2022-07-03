@@ -405,13 +405,13 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         }
     },
     turnEnd(){
-      display.turnPlayer()
         if(this.players.indexOf(this.turnPlayer) === this.players.length-1){
             this.turnPlayer = this.players[0];
         } else {
             this.turnPlayer = this.players[this.players.indexOf(this.turnPlayer)+1];
         }
         this.turn += 1
+        display.turnPlayer()
         if(this.fieldCards.owner === this.turnPlayer){
             this.winner = this.turnPlayer
             this.roundEnd();

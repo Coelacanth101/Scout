@@ -565,9 +565,9 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
     takeOver(player){
       display.log('566')
       display.log(player)
-      this.players[player.number].socketID = player.socketId
+      this.players[player.number].socketID = player.socketID
       display.log('569')
-      display.log(players[player.number].socketID)
+      display.log(this.players[player.number].socketID)
     }
 };
 

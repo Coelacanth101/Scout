@@ -563,11 +563,9 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
       this.phase = 'nameinputting';
     },
     takeOver(player){
-      display.log('566')
-      display.log(player)
       this.players[player.number].socketID = player.socketID
-      display.log('569')
-      display.log(this.players[player.number].socketID)
+      this.players[player.number].combination = {cards:[], valid:true, type:'', owner:this};
+      this.players[player.number].scoutplace = [];
     }
 };
 

@@ -682,6 +682,9 @@ const display = {
   turnPlayer(){
     let tn = game.turnPlayer.number
     io.emit('turnplayer', tn)
+  },
+  takeOver(player){
+    io.emit('takeoverbuttonclick', player)
   }
 }
 
@@ -885,5 +888,14 @@ io.on("connection", (socket)=>{
   socket.on('initializebuttonclick', (e)=>{
     display.initialize()
     game.initialize()
+  })
+
+  //継承
+  socket.on('takeoverbuttonclick', (player)=>{
+    display.takeOver(player)
+    game.takeOver(player)
+    let p = game.players[player.number]
+    p = server.copyOf(p)
+    display.myHand(p)
   })
 })

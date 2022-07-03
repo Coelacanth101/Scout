@@ -109,6 +109,9 @@ socket.on('initializebuttonclick', ()=>{
 socket.on('turnplayer', (tn)=>{
     display.turnPlayer(tn)
 })
+socket.on('takeover', (player)=>{
+    display.takeOver(player)
+})
 
 
 //手札を選択
@@ -198,6 +201,19 @@ $('#newgamebutton').on('click',function(){
     let e =''
     socket.emit('newgamebuttonclick', e)
 });
+
+//継承
+$('.takeoverbutton').on('click', function(){
+    let n = Number($(this).data('playernumber'))
+    player ={number:n, socketID:socket.id}
+    socket.emit('takeoverbuttonclick', player)
+})
+
+
+
+
+
+
 
 //画面表示
 const display = {
@@ -362,5 +378,8 @@ const display = {
         }
         $(`#player${tn}`).css('border', '5px solid');
         $(`#player${tn}`).css('border-color', 'purple');
+    },
+    takeOver(player){
+        $(`#player${player.number}`).data('socketid') = player.socketID
     }
 }

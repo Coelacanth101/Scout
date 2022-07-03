@@ -573,6 +573,10 @@ const display = {
     let nop = game.players.length
     io.emit('hideItems', nop);
   },
+  hideMyItems(socketID){
+    let e =''
+    io.to(socketID).emit('hidemyitems', e)
+  },
   name(){
     let players = []
     for(let p of game.players){
@@ -760,11 +764,10 @@ io.on("connection", (socket)=>{
   if(game.phase === 'nameinputting'){
     io.to(socket.id).emit("nameDisplay", (playersName));
   }else if(game.phase === 'setup'){
+    let socketID = socket.id
     display.name();
     display.allHands();
-    display.hideItems();
-    $('.startbutton').show()
-    $('.reversebutton').show();
+    display.hideMyItems(socketID);
     display.field()
   }else{
     display.name();

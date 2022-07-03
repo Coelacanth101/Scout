@@ -116,6 +116,9 @@ socket.on('takeoverbuttonclick', (player)=>{
 socket.on('log', (a)=>{
     display.log(a)
 })
+socket.on('hidemyitems',()=>{
+    display.hideMyItems()
+})
 
 
 //手札を選択
@@ -239,6 +242,15 @@ const display = {
         $('#field').show()
         $('.startbutton').hide()
         $('.reversebutton').hide();
+        $('#players').show();
+    },
+    hideMyItems(){
+        $('#gamestartbutton').hide()
+        $('#nextroundbutton').hide();
+        $('#newgamebutton').hide();
+        $('#nameinputarea').hide();
+        $('#result').hide();
+        $('#field').show()
         $('#players').show();
     },
     name(players){

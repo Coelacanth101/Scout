@@ -562,6 +562,9 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
       this.champion = ''
       this.phase = 'nameinputting';
     },
+    takeOver(player){
+      this.players[player.number].socketID = player.sicketId
+    }
 };
 
 const display = {
@@ -892,7 +895,6 @@ io.on("connection", (socket)=>{
 
   //継承
   socket.on('takeoverbuttonclick', (player)=>{
-    console.log('takeover')
     display.takeOver(player)
     game.takeOver(player)
     let p = game.players[player.number]

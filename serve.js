@@ -505,6 +505,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         if(s === true){
             this.turn += 1;
             this.turnPlayer = this.startPlayer;
+            this.phase = 'playing'
             if(this.round !== 1){
               display.turnPlayer()
             }
@@ -523,7 +524,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         }
     },
     gameStart(){
-        this.phase = 'playing'
+        this.phase = 'setup'
         this.playerMake();
         this.cardMake();
         this.newGame();
@@ -758,6 +759,13 @@ io.on("connection", (socket)=>{
   //画面の表示
   if(game.phase === 'nameinputting'){
     io.to(socket.id).emit("nameDisplay", (playersName));
+  }else if(game.phase === 'setup'){
+    display.name();
+    display.allHands();
+    display.hideItems();
+    $('.startbutton').show()
+    $('.reversebutton').show();
+    display.field()
   }else{
     display.name();
     display.allHands();

@@ -381,7 +381,7 @@ const display = {
         $(`#player${tn}`).css('border-color', 'purple');
     },
     takeOver(player){
-        console.log('player')
+        console.log(player)
         $(`#player${player.number}`).data('socketid', player.socketID)
     },
     log(a){

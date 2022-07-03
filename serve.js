@@ -566,6 +566,8 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
       display.log('566')
       display.log(player)
       this.players[player.number].socketID = player.socketId
+      display.log('569')
+      display.log(players[player.number].socketID)
     }
 };
 
@@ -901,6 +903,8 @@ io.on("connection", (socket)=>{
 
   //継承
   socket.on('takeoverbuttonclick', (player)=>{
+    console.log('904')
+    console.log(player)
     display.takeOver(player)
     game.takeOver(player)
     let p = game.players[player.number]

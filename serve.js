@@ -563,7 +563,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
       this.phase = 'nameinputting';
     },
     takeOver(player){
-      this.players[player.number].socketID = player.sicketId
+      this.players[player.number].socketID = player.socketId
     }
 };
 

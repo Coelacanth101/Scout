@@ -218,7 +218,6 @@ $('.takeoverbutton').on('click', function(){
 //画面表示
 const display = {
     hideItems(nop){
-        console.log(nop)
         let i = 1
         while(i <= 5){
             $(`#player${i-1}`).show()
@@ -269,7 +268,6 @@ const display = {
                 };
             }else{
                 for(c of p.hand){
-                    console.log('koko')
                     $(`#player${p.number}hand`).append(`<img src="./back.png" id="player${p.number}card${c.index}" class="card">`);
                 }
             }
@@ -297,7 +295,6 @@ const display = {
         $('#nextroundbutton').toggle()
     },
     roundResult(data){
-        console.log(data.players)
         $('#result').show();
         $('#result').html('')
         $('#result').html(`<div>${data.round}ラウンド終了</div>`)

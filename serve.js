@@ -903,8 +903,8 @@ io.on("connection", (socket)=>{
 
   //継承
   socket.on('takeoverbuttonclick', (player)=>{
-    console.log('904')
-    console.log(player)
+    display.log('904')
+    display.log(player)
     display.takeOver(player)
     game.takeOver(player)
     let p = game.players[player.number]

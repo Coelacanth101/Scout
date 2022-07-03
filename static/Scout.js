@@ -357,9 +357,10 @@ const display = {
     turnPlayer(tn){
         let i = 0;
         while(i <= 4){
-            $(`#player${i}`).css('background-color', '');
+            $(`#player${i}`).css('border', '');
             i += 1
         }
-        $(`#player${tn}`).css('background-color', 'red');
+        $(`#player${tn}`).css('border', '5px');
+        $(`#player${tn}`).css('border-color', 'purple');
     }
 }

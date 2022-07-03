@@ -380,6 +380,7 @@ const display = {
         $(`#player${tn}`).css('border-color', 'purple');
     },
     takeOver(player){
+        console.log('takeover')
         $(`#player${player.number}`).data('socketid') = player.socketID
     }
 }

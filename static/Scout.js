@@ -109,7 +109,7 @@ socket.on('initializebuttonclick', ()=>{
 socket.on('turnplayer', (tn)=>{
     display.turnPlayer(tn)
 })
-socket.on('takeover', (player)=>{
+socket.on('takeoverbuttonclick', (player)=>{
     display.takeOver(player)
 })
 
@@ -205,7 +205,7 @@ $('#newgamebutton').on('click',function(){
 //継承
 $('.takeoverbutton').on('click', function(){
     let n = Number($(this).data('playernumber'))
-    player ={number:n, socketID:socket.id}
+    let player ={number:n, socketID:socket.id}
     socket.emit('takeoverbuttonclick', player)
 })
 

@@ -564,8 +564,6 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
     },
     takeOver(player){
       this.players[player.number].socketID = player.socketID
-      this.players[player.number].combination = {cards:[], valid:true, type:'', owner:this};
-      this.players[player.number].scoutplace = [];
     }
 };
 

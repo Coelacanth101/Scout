@@ -120,7 +120,7 @@ socket.on('log', (a)=>{
 
 //手札を選択
 $('.hand').on('click', '.card',function(){
-    if($(this).parent().parent().attr('data-socketid') === socket.id){
+    if($(this).parent().parent().data('socketid') === socket.id){
         const cardName = $(this).attr('alt')
         let data = {cardName:cardName, socketID:socket.id}
         socket.emit('handclick', data)
@@ -130,7 +130,7 @@ $('.hand').on('click', '.card',function(){
 
 //開始に同意する
 $('.startbutton').on('click',function(){
-    if($(this).parent().parent().attr('data-socketid') === socket.id){
+    if($(this).parent().parent().data('socketid') === socket.id){
         let n = Number($(this).data('playernumber'))
         data ={number:n, socketID:socket.id}
         socket.emit('startbuttonclick', data)
@@ -141,7 +141,7 @@ $('.startbutton').on('click',function(){
 
 //カードを場に出す
 $('.playbutton').on('click',function(){
-    if($(this).parent().parent().attr('data-socketid') === socket.id){
+    if($(this).parent().parent().data('socketid') === socket.id){
         let n = Number($(this).data('playernumber'))
         player ={number:n, socketID:socket.id}
         socket.emit('playbuttonclick', player)
@@ -151,7 +151,7 @@ $('.playbutton').on('click',function(){
 
 //カードをひっくり返す
 $('.reversebutton').on('click',function(){
-    if($(this).parent().parent().attr('data-socketid') === socket.id){
+    if($(this).parent().parent().data('socketid') === socket.id){
         let n = Number($(this).data('playernumber'))
         socket.emit('reversebuttonclick', n)
     }
@@ -166,7 +166,7 @@ $('#field').on('click', '.card', function(){
 
 //そのままスカウトする
 $('.stayscoutbutton').on('click',function(){
-    if($(this).parent().parent().attr('data-socketid') === socket.id){
+    if($(this).parent().parent().data('socketid') === socket.id){
         let n = Number($(this).data('playernumber'))
         player ={number:n, socketID:socket.id}
         socket.emit('stayscoutbuttonclick', player)
@@ -175,7 +175,7 @@ $('.stayscoutbutton').on('click',function(){
 });
 //ひっくり返してスカウトする
 $('.reversescoutbutton').on('click',function(){
-    if($(this).parent().parent().attr('data-socketid') === socket.id){
+    if($(this).parent().parent().data('socketid') === socket.id){
         let n = Number($(this).data('playernumber'))
         player ={number:n, socketID:socket.id}
         socket.emit('reversescoutbuttonclick', player)
@@ -186,7 +186,7 @@ $('.reversescoutbutton').on('click',function(){
 
 //ダブルアクション
 $('.doublebutton').on('click',function(){
-    if($(this).parent().parent().attr('data-socketid') === socket.id){
+    if($(this).parent().parent().data('socketid') === socket.id){
         let n = Number($(this).data('playernumber'))
         player ={number:n, socketID:socket.id}
         socket.emit('doublebuttonclick', player)
@@ -382,7 +382,7 @@ const display = {
     },
     takeOver(player){
         console.log(player)
-        $(`#player${player.number}`).attr('data-socketid', player.socketID)
+        $(`#player${player.number}`).data('socketid', player.socketID)
     },
     log(a){
         console.log(a)

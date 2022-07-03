@@ -116,8 +116,8 @@ socket.on('takeoverbuttonclick', (player)=>{
 socket.on('log', (a)=>{
     display.log(a)
 })
-socket.on('hidemyitems',()=>{
-    display.hideMyItems()
+socket.on('hidemyitems',(nop)=>{
+    display.hideMyItems(nop)
 })
 
 
@@ -244,7 +244,16 @@ const display = {
         $('.reversebutton').hide();
         $('#players').show();
     },
-    hideMyItems(){
+    hideMyItems(nop){
+        let i = 1
+        while(i <= 5){
+            $(`#player${i-1}`).show()
+            i += 1
+        }
+        while(nop <= 4){
+            $(`#player${nop}`).hide()
+            nop += 1
+        }
         $('#gamestartbutton').hide()
         $('#nextroundbutton').hide();
         $('#newgamebutton').hide();

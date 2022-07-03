@@ -574,8 +574,8 @@ const display = {
     io.emit('hideItems', nop);
   },
   hideMyItems(socketID){
-    let e =''
-    io.to(socketID).emit('hidemyitems', e)
+    let nop = game.players.length
+    io.to(socketID).emit('hidemyitems', nop)
   },
   name(){
     let players = []

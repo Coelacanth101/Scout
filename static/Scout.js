@@ -110,6 +110,7 @@ socket.on('turnplayer', (tn)=>{
     display.turnPlayer(tn)
 })
 socket.on('takeoverbuttonclick', (player)=>{
+    console.log('113')
     display.takeOver(player)
 })
 socket.on('log', (a)=>{
@@ -380,7 +381,7 @@ const display = {
         $(`#player${tn}`).css('border-color', 'purple');
     },
     takeOver(player){
-        console.log('takeover')
+        console.log('player')
         $(`#player${player.number}`).data('socketid', player.socketID)
     },
     log(a){

@@ -564,6 +564,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
     },
     takeOver(player){
       display.log('566')
+      display.log(player)
       this.players[player.number].socketID = player.socketId
     }
 };
@@ -900,11 +901,12 @@ io.on("connection", (socket)=>{
 
   //継承
   socket.on('takeoverbuttonclick', (player)=>{
-    display.log('1')
     display.takeOver(player)
     game.takeOver(player)
     let p = game.players[player.number]
     p = server.copyOf(p)
+    display.log('908')
+    display.log(p)
     display.myHand(p)
   })
 

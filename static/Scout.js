@@ -105,6 +105,9 @@ socket.on('fieldcarddelete', (card)=>{
 });
 socket.on('initializebuttonclick', ()=>{
     display.initialize()
+});
+socket.on('turnplayer', (tn)=>{
+    display.turnPlayer(tn)
 })
 
 
@@ -350,5 +353,13 @@ const display = {
             </div>`)
             i += 1
         }
+    },
+    turnPlayer(tn){
+        let i = 0;
+        while(i <= 4){
+            $(`#Player${i}`).css('background-color', '');
+            i += 1
+        }
+        $(`#Player${tn}`).css('background-color', 'red');
     }
 }

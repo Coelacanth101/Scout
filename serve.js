@@ -405,6 +405,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         }
     },
     turnEnd(){
+      display.turnPlayer()
         if(this.players.indexOf(this.turnPlayer) === this.players.length-1){
             this.turnPlayer = this.players[0];
         } else {
@@ -668,9 +669,12 @@ const display = {
   initialize(){
     let a = ''
     io.emit('initializebuttonclick',a)
+  },
+  turnPlayer(){
+    let tn = game.turnPlayer.number
+    io.emit('turnplayer', tn)
   }
 }
-
 
 
 const server = {

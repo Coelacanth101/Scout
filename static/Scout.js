@@ -360,7 +360,7 @@ const display = {
             $(`#player${tn}`).css('border', '0px');
             i += 1
         }
-        $(`#player${tn}`).css('border', '5px');
+        $(`#player${tn}`).css('border', '5px solid');
         $(`#player${tn}`).css('border-color', 'purple');
     }
 }

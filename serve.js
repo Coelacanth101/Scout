@@ -759,14 +759,14 @@ io.on("connection", (socket)=>{
   //画面の表示
   if(game.phase === 'nameinputting'){
     io.to(socket.id).emit("nameDisplay", (playersName));
-  }else if(game.phase === 'setup'){
+  }/*else if(game.phase === 'setup'){
     display.name();
     display.allHands();
     display.hideItems();
     $('.startbutton').show()
     $('.reversebutton').show();
     display.field()
-  }else{
+  }*/else{
     display.name();
     display.allHands();
     display.hideItems();

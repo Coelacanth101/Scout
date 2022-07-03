@@ -458,6 +458,12 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         display.startButton();
         display.reverseButton();
         display.field()
+        for(let p of game.players){
+          let player = server.copyOf(p)
+          display.gain(player)
+          display.chip(player)
+          display.doubleaction(player)
+        }
     },
     matchEnd(){
         this.champion =''
@@ -499,6 +505,9 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         if(s === true){
             this.turn += 1;
             this.turnPlayer = this.startPlayer;
+            if(this.round !== 1){
+              display.turnPlayer()
+            }
         }
     },
     playerMake(){

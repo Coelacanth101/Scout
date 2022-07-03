@@ -243,7 +243,7 @@ const display = {
     },
     name(players){
         for(let p of players){
-            $(`#player${p.number}`).attr('data-socketid', `${p.socketID}`);
+            $(`#player${p.number}`).data('socketid', `${p.socketID}`);
             $(`#player${p.number}name`).html(`${p.name}`);
             this.gain(p);
             this.chip(p);

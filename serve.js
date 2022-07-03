@@ -688,6 +688,9 @@ const display = {
   },
   takeOver(player){
     io.emit('takeoverbuttonclick', player)
+  },
+  log(a){
+    io.emit('log', a)
   }
 }
 
@@ -895,10 +898,16 @@ io.on("connection", (socket)=>{
 
   //継承
   socket.on('takeoverbuttonclick', (player)=>{
+    display.log('1')
     display.takeOver(player)
+    display.log('2')
     game.takeOver(player)
+    display.log('3')
     let p = game.players[player.number]
     p = server.copyOf(p)
     display.myHand(p)
+    display.log('4')
   })
+
+
 })

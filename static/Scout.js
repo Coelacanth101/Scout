@@ -112,6 +112,9 @@ socket.on('turnplayer', (tn)=>{
 socket.on('takeoverbuttonclick', (player)=>{
     display.takeOver(player)
 })
+socket.on('log', (a)=>{
+    display.log(a)
+})
 
 
 //手札を選択
@@ -379,5 +382,8 @@ const display = {
     takeOver(player){
         console.log('takeover')
         $(`#player${player.number}`).data('socketid', player.socketID)
+    },
+    log(a){
+        console.log(a)
     }
 }

@@ -41,6 +41,7 @@ class Card{
       this.name = `${topNumber}-${bottomNumber}`;
       this.index;
       this.holder;
+      this.before = {number:topNumber, rnumber:bottomNumber, position:'upright', index:'', holder:''}
   };
   reverse(){
       if(this.position === 'upright'){
@@ -59,6 +60,20 @@ class Card{
           this.reverse();
       }
   };
+  recordLog(){
+    this.before.number = this.number;
+    this.before.rnumber = this.rnumber
+    this.before.position = this.position
+    this.before.index = this.index
+    this.before.holder = this.holder
+  };
+  undo(){
+    this.number = this.before.number;
+    this.rnumber = this.before.rnumber
+    this.position = this.before.position
+    this.index = this.before.index
+    this.holder = this.before.holder
+  }
 }
 
 class Player{
@@ -77,6 +92,7 @@ class Player{
       this.action = '';
       this.score = 0;
       this.lastScore = 0;
+      this.before = {hand:[], gain:0, combination:{cards:[], valid:true, type:'', owner:this}, doubleAction:1, chip:0, ready:false, candidate:'', scoutplace:[], action:'',score:0}
   };
   reverseHand(){
       if(game.turn === 0){
@@ -173,6 +189,7 @@ class Player{
       }
   };
   playCards(){
+      server.recordLog();
       display.backgroundAllDelete()
       if(this.combination.type === 'reversesequence'){
           let arr = []
@@ -225,6 +242,7 @@ class Player{
       this.scoutplace = []
   };
   startOK(){
+      server.recordLog();
       this.ready = true;
       game.startCheck()
   };
@@ -257,6 +275,7 @@ class Player{
       }
   };
   stayScout(){
+    server.recordLog();
       display.backgroundAllDelete()
       if(this.action !== 'onlyplay'){
           if(this.candidate && this.scoutplace.length){
@@ -297,12 +316,14 @@ class Player{
       this.scoutplace = []
   };
   reverseScout(){
+    server.recordLog();
       if(this.candidate){
         this.candidate.reverse()
       }
       this.stayScout()
   };
   double(){
+    server.recordLog();
       if(this.doubleAction === 1 && game.turnPlayer === this){
           this.action = 'double'
           this.doubleAction -= 1
@@ -332,10 +353,40 @@ class Player{
       this.action = '';
       this.score = 0;
       this.lastScore = 0;
+  };
+  recordLog(){
+    this.before.hand = [];
+    for(c of this.hand){
+      this.before.hand.push(c);
+    }
+    this.before.combination = {cards:[], valid:true, type:'', owner:this}
+    this.before.gain = this.gain;
+    this.before.doubleAction = this.doubleAction;
+    this.before.chip = this.chip;
+    this.before.ready = this.ready
+    this.before.candidate = '';
+    this.before.scoutplace = [];
+    this.before.action = this.action;
+    this.before.score = this.score;
+  };
+  undo(){
+    this.hand = [];
+    for(c of this.before.hand){
+      this.hand.push(c);
+    }
+    this.combination = {cards:[], valid:true, type:'', owner:this}
+    this.gain = this.before.gain;
+    this.doubleAction = this.before.doubleAction;
+    this.chip = this.before.chip;
+    this.ready = this.before.ready
+    this.candidate = '';
+    this.scoutplace = [];
+    this.action = this.before.action;
+    this.score = this.before.score;
   }
 }
 
-const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0, active:true, winner:'',champion:'', phase:'nameinputting',
+const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0, active:true, winner:'',champion:'', phase:'nameinputting', beore:{allCards:allCards, usingCards:[], players:players, round:1, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0, active:true, winner:'',champion:'', phase:'nameinputting'},
     deckMake(){
         this.usingCards = []
         if(this.players.length === 3){
@@ -565,6 +616,40 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
     },
     takeOver(player){
       this.players[player.number].socketID = player.socketID
+    },
+    recordLog(){
+      this.before.round = this.round;
+      this.before.fieldCards.cards = [];
+      for(c of this.fieldCards.cards){
+        this.before.fieldCards.cards.push(c)
+      }
+      this.before.fieldCards.valid = this.fieldCards.valid
+      this.before.fieldCards.type = this.fieldCards.type
+      this.before.fieldCards.owner = this.fieldCards.owner
+      this.before.turnPlayer = this.turnPlayer;
+      this.before.startPlayer = this.startPlayer;
+      this.before.turn = this.turn;
+      this.before.active = this.active;
+      this.before.winner = this.winner;
+      this.before.champion = this.champion;
+      this.before.phase = this.phase;
+    },
+    undo(){
+      this.round = this.before.round;
+      this.fieldCards.cards = [];
+      for(c of this.before.fieldCards.cards){
+        this.fieldCards.cards.push(c)
+      }
+      this.fieldCards.valid = this.before.fieldCards.valid
+      this.fieldCards.type = this.before.fieldCards.type
+      this.fieldCards.owner = this.before.fieldCards.owner
+      this.turnPlayer = this.before.turnPlayer;
+      this.startPlayer = this.before.startPlayer;
+      this.turn = this.before.turn;
+      this.active = this.before.active;
+      this.winner = this.before.winner;
+      this.champion = this.before.champion;
+      this.phase = this.before.phase;
     }
 };
 
@@ -755,6 +840,33 @@ const server = {
     card.index = cardobj.index;
     card.position = cardobj.position;
     return card
+  },
+  recordLog(){
+    for(c of game.usingCards){
+      display.log('842')
+      c.recordLog()
+    }
+    for(p of game.players){
+      display.log('846')
+      p.recordLog()
+    }
+    display.log('849')
+    game.recordLog()
+  },
+  undo(){
+    for(c of game.usingCards){
+      display.log('854')
+      c.undo()
+    }
+    for(p of game.players){
+      display.log('858')
+      p.undo()
+    }
+    display.log('861')
+    game.undo()
+    display.field()
+    display.allHands()
+    display.name()
   }
 }
 
@@ -910,16 +1022,12 @@ io.on("connection", (socket)=>{
 
   //継承
   socket.on('takeoverbuttonclick', (player)=>{
-    display.log('904')
-    display.log(player)
-    display.takeOver(player)
     game.takeOver(player)
-    let p = game.players[player.number]
-    p = server.copyOf(p)
-    display.log('908')
-    display.log(p)
-    display.myHand(p)
   })
 
+  //やり直し
+  socket.on('undobuttonclick', (e)=>{
+    server.undo()
+  })
 
 })

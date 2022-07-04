@@ -214,6 +214,12 @@ $('.takeoverbutton').on('click', function(){
     let n = Number($(this).data('playernumber'))
     let player ={number:n, socketID:socket.id}
     socket.emit('takeoverbuttonclick', player)
+});
+
+//やり直し
+$('.undobutton').on('click', function(){
+    let e =''
+    socket.emit('undobuttonclick', e)
 })
 
 

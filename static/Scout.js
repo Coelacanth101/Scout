@@ -110,7 +110,6 @@ socket.on('turnplayer', (tn)=>{
     display.turnPlayer(tn)
 })
 socket.on('takeoverbuttonclick', (player)=>{
-    console.log('113')
     display.takeOver(player)
 })
 socket.on('log', (a)=>{
@@ -118,6 +117,9 @@ socket.on('log', (a)=>{
 })
 socket.on('hidemyitems',(nop)=>{
     display.hideMyItems(nop)
+})
+socket.on('showstart', (n)=>{
+    display.showStart(n)
 })
 
 
@@ -218,8 +220,9 @@ $('.takeoverbutton').on('click', function(){
 
 //やり直し
 $('.undobutton').on('click', function(){
-    let e =''
-    socket.emit('undobuttonclick', e)
+    let n = Number($(this).data('playernumber'))
+    let player ={number:n, socketID:socket.id}
+    socket.emit('undobuttonclick', player)
 })
 
 
@@ -408,8 +411,11 @@ const display = {
         $(`#player${tn}`).css('border-color', 'purple');
     },
     takeOver(player){
-        console.log(player)
         $(`#player${player.number}`).data('socketid', player.socketID)
+    },
+    showStart(n){
+        $(`#startbutton${n}`).show();
+        $(`#reversebutton${n}`).show();
     },
     log(a){
         console.log(a)

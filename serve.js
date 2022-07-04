@@ -19,7 +19,7 @@ app.get("/:file", (req, res)=>{
 /**
  * 3000番でサーバを起動する
  */
- http.listen(process.env.PORT || 3000, ()=>{
+ http.listen(3000, ()=>{
   console.log("listening on *:3000");
 });
 
@@ -61,7 +61,6 @@ class Card{
       }
   };
   recordLog(){
-    display('64')
     this.before.number = this.number;
     this.before.rnumber = this.rnumber
     this.before.position = this.position
@@ -93,7 +92,7 @@ class Player{
       this.action = '';
       this.score = 0;
       this.lastScore = 0;
-      this.before = {hand:[], gain:0, combination:{cards:[], valid:true, type:'', owner:this}, doubleAction:1, chip:0, ready:false, candidate:'', scoutplace:[], action:'',score:0}
+      this.before = {hand:[], gain:0, combination:{cards:[], valid:true, type:'', owner:this}, doubleAction:1, chip:0, candidate:'', scoutplace:[], action:'',score:0}
   };
   reverseHand(){
       if(game.turn === 0){
@@ -145,10 +144,8 @@ class Player{
               i += 1;
           }
           if(this.combination.valid === true){
-            console.log('a')
               this.combination.type = 'set'
           }else{
-            console.log('b')
               this.combination.valid = true
               //昇順か確認
               i = 1;
@@ -168,7 +165,6 @@ class Player{
                   i = 1;
                   while(i <= this.combination.cards.length-1){
                       if(this.combination.cards[i].number !== this.combination.cards[i-1].number - 1){
-                        console.log('ag')
                           this.combination.valid = false;
                           this.combination.type = ''
                       }
@@ -180,11 +176,9 @@ class Player{
               }
           }
       }else if(this.combination.cards.length === 1){
-        console.log('e')
           this.combination.type = 'single'
           this.combination.valid = true
       }else{
-        console.log('f')
           this.combination.type = ''
           this.combination.valid = false;
       }
@@ -243,7 +237,6 @@ class Player{
       this.scoutplace = []
   };
   startOK(){
-      server.recordLog();
       this.ready = true;
       game.startCheck()
   };
@@ -276,7 +269,7 @@ class Player{
       }
   };
   stayScout(){
-    server.recordLog();
+      server.recordLog();
       display.backgroundAllDelete()
       if(this.action !== 'onlyplay'){
           if(this.candidate && this.scoutplace.length){
@@ -317,11 +310,48 @@ class Player{
       this.scoutplace = []
   };
   reverseScout(){
-    server.recordLog();
+      server.recordLog();
       if(this.candidate){
         this.candidate.reverse()
       }
-      this.stayScout()
+      display.backgroundAllDelete()
+      if(this.action !== 'onlyplay'){
+          if(this.candidate && this.scoutplace.length){
+              if(this.scoutplace.length === 2){
+                  this.hand.splice(this.scoutplace[1].index, 0, this.candidate);
+                  this.candidate.holder = this;
+              }else if(this.scoutplace[0].index === 0){
+                  this.hand.unshift(this.candidate);
+                  this.candidate.holder = this;
+              }else if(this.scoutplace[0].index === this.hand.length-1){
+                  this.hand.push(this.candidate);
+                  this.candidate.holder = this;
+              }else{
+                  this.combination = {cards:[], valid:true, type:'', owner:this};
+                  this.candidate = '';
+                  this.scoutplace = []
+                  display.backgroundAllDelete()
+                  return
+              }
+              for(let item of this.hand){
+                  item.index = this.hand.indexOf(item)
+              }
+              server.discard(this.candidate, game.fieldCards.cards);
+              display.myHand(server.copyOf(this));
+              display.field();
+              game.fieldCards.owner.chip += 1
+              display.chip(server.copyOf(game.fieldCards.owner))
+              if(this.action === ''){
+                  this.action = ''
+                  game.turnEnd()
+              }else{
+                  this.action = 'onlyplay'
+              }
+          }
+      }
+      this.combination = {cards:[], valid:true, type:'', owner:this};
+      this.candidate = '';
+      this.scoutplace = []
   };
   double(){
     server.recordLog();
@@ -364,7 +394,6 @@ class Player{
     this.before.gain = this.gain;
     this.before.doubleAction = this.doubleAction;
     this.before.chip = this.chip;
-    this.before.ready = this.ready
     this.before.candidate = '';
     this.before.scoutplace = [];
     this.before.action = this.action;
@@ -379,15 +408,15 @@ class Player{
     this.gain = this.before.gain;
     this.doubleAction = this.before.doubleAction;
     this.chip = this.before.chip;
-    this.ready = this.before.ready
     this.candidate = '';
     this.scoutplace = [];
     this.action = this.before.action;
     this.score = this.before.score;
   }
+
 }
 
-const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0, active:true, winner:'',champion:'', phase:'nameinputting', beore:{allCards:allCards, usingCards:[], players:players, round:1, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0, active:true, winner:'',champion:'', phase:'nameinputting'},
+const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0, active:true, winner:'',champion:'', phase:'nameinputting', before:{allCards:allCards, usingCards:[], players:players, round:1, fieldCards:{cards:[], valid:true, type:'', owner:''}, turnPlayer:'', startPlayer:'', turn:0, active:true, winner:'',champion:'', phase:'nameinputting'},
     deckMake(){
         this.usingCards = []
         if(this.players.length === 3){
@@ -436,6 +465,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
                 i += 1;
             }
         }
+        server.recordLog()
     },
     combiJudge(p, f){
         if(p.cards.length !== 0){
@@ -552,10 +582,12 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         for(let p of this.players){
             if(p.ready === false){
                 s = false;
+                this.turn = 0
             }
         }
         if(s === true){
-            this.turn += 1;
+            this.turn = 1;
+            console.log(this.turn)
             this.turnPlayer = this.startPlayer;
             this.phase = 'playing'
             if(this.round !== 1){
@@ -580,6 +612,8 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         this.playerMake();
         this.cardMake();
         this.newGame();
+        display.field();
+        display.turnPlayer();
     },
     cardMake(){
       let t = 1;
@@ -778,8 +812,10 @@ const display = {
     io.emit('turnplayer', tn)
   },
   takeOver(player){
-    display.log('691')
     io.emit('takeoverbuttonclick', player)
+  },
+  showStart(n){
+    io.emit('showstart', n)
   },
   log(a){
     io.emit('log', a)
@@ -844,31 +880,25 @@ const server = {
   },
   recordLog(){
     for(c of game.usingCards){
-      display.log('842')
-      display.log(server.copyOfCard(c))
       c.recordLog()
     }
     for(p of game.players){
-      display.log('846')
       p.recordLog()
     }
-    display.log('849')
     game.recordLog()
   },
   undo(){
     for(c of game.usingCards){
-      display.log('854')
       c.undo()
     }
     for(p of game.players){
-      display.log('858')
       p.undo()
     }
-    display.log('861')
     game.undo()
     display.field()
     display.allHands()
     display.name()
+    display.turnPlayer()
   }
 }
 
@@ -938,9 +968,7 @@ io.on("connection", (socket)=>{
           thisCard.holder.cancel(thisCard);
       }
       game.turnPlayer.checkCombination();
-      console.log(game.turnPlayer.combination.type)
-      console.log(game.turnPlayer.combination.valid)
-  }
+    }
   });
 
   //開始に同意する
@@ -1025,11 +1053,21 @@ io.on("connection", (socket)=>{
   //継承
   socket.on('takeoverbuttonclick', (player)=>{
     game.takeOver(player)
+    display.takeOver(player)
+    display.allHands()
   })
 
   //やり直し
-  socket.on('undobuttonclick', (e)=>{
+  socket.on('undobuttonclick', (player)=>{
     server.undo()
+    let n = player.number
+    let p = game.players[n]
+    if(game.turn <= 1){
+      p.ready = false
+      game.startCheck()
+      display.showStart(n)
+    }
+    console.log(game.turn)
   })
 
 })

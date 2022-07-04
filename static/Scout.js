@@ -67,8 +67,8 @@ socket.on('myHand', (player)=>{
 socket.on('field', (cards)=>{
     display.field(cards)
 });
-socket.on('nextButton', ()=>{
-    display.nextButton()
+socket.on('nextButtonHide', ()=>{
+    display.nextButtonHIde()
 });
 socket.on('roundResult', (data)=>{
     display.roundResult(data)
@@ -108,6 +108,9 @@ socket.on('initializebuttonclick', ()=>{
 });
 socket.on('turnplayer', (tn)=>{
     display.turnPlayer(tn)
+})
+socket.on('turnplayerdelete', ()=>{
+    display.turnPlayerDelete()
 })
 socket.on('takeoverbuttonclick', (player)=>{
     display.takeOver(player)
@@ -220,11 +223,21 @@ $('.takeoverbutton').on('click', function(){
 
 //やり直し
 $('.undobutton').on('click', function(){
-    let n = Number($(this).data('playernumber'))
-    let player ={number:n, socketID:socket.id}
-    socket.emit('undobuttonclick', player)
-})
+    if($(this).parent().parent().data('socketid') === socket.id){
+        let n = Number($(this).data('playernumber'))
+        let player ={number:n, socketID:socket.id}
+        socket.emit('undobuttonclick', player)
+    }
+});
 
+//ターン終了
+$('.endbutton').on('click', function(){
+    if($(this).parent().parent().data('socketid') === socket.id){
+        let n = Number($(this).data('playernumber'))
+        let player ={number:n, socketID:socket.id}
+        socket.emit('endbuttonclick', player)
+    }
+});
 
 
 
@@ -325,8 +338,8 @@ const display = {
             $('#field').append(`<img src="./${item.name}.png" id="fieldcard${item.index}" class="card ${item.position}" alt="${item.name}">`)
         }
     },
-    nextButton(){
-        $('#nextroundbutton').toggle()
+    nextButtonHIde(){
+        $('#nextroundbutton').hide()
     },
     roundResult(data){
         $('#result').show();
@@ -335,6 +348,7 @@ const display = {
         for(let p of data.players){
             $('#result').append(`<div>${p.name}:${p.lastScore}点</div>`)
         }
+        $('#nextroundbutton').show()
     },
     matchResult(data){
         $('#result').show();
@@ -409,6 +423,13 @@ const display = {
         }
         $(`#player${tn}`).css('border', '5px solid');
         $(`#player${tn}`).css('border-color', 'purple');
+    },
+    turnPlayerDelete(){
+        let i = 0;
+        while(i <= 4){
+            $(`#player${i}`).css('border', '0px');
+            i += 1
+        }
     },
     takeOver(player){
         $(`#player${player.number}`).data('socketid', player.socketID)

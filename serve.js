@@ -236,6 +236,15 @@ class Player{
       this.candidate = '';
       this.scoutplace = []
   };
+  turnEnd(){
+    server.recordLog()
+    display.backgroundAllDelete()
+    this.action = '';
+    this.combination = {cards:[], valid:true, type:'', owner:this};
+    this.candidate = '';
+    this.scoutplace = [];
+    game.turnEnd();
+  };
   startOK(){
       this.ready = true;
       game.startCheck()
@@ -513,10 +522,11 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
             }
             display.score(server.copyOf(p))
         }
+        this.phase = 'roundresult'
         display.roundResult()
-        display.nextButton()
     },
     nextRound(){
+        this.phase = 'playing'
         if(this.round === this.players.length){
             this.matchEnd();
             return
@@ -540,6 +550,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         display.startButton();
         display.reverseButton();
         display.field()
+        display.turnPlayer();
         for(let p of game.players){
           let player = server.copyOf(p)
           display.gain(player)
@@ -556,6 +567,7 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
                 this.champion = p
             }
         };
+        this.phase = 'matchresult'
         display.matchResult();
     },
     reset(){
@@ -568,14 +580,25 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         for(let p of this.players){
             p.newGame();
         }
+        this.round = 1
         this.fieldCards = {cards:[], valid:true, type:'', owner:''}
+        this.turnPlayer = ''
+        this.startPlayer = ''
+        this.turn = 0
+        this.active = true
+        this.winner = ''
+        this.champion = ''
+        this.phase ='setup'
         this.deckMake();
         this.deal();
         display.name();
         display.allHands();
+        display.field()
         display.hideItems();
         display.startButton();
         display.reverseButton();
+        display.turnPlayer();
+        display.turnPlayerDelete();
     },
     startCheck(){
         let s = true
@@ -587,7 +610,6 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         }
         if(s === true){
             this.turn = 1;
-            console.log(this.turn)
             this.turnPlayer = this.startPlayer;
             this.phase = 'playing'
             if(this.round !== 1){
@@ -608,12 +630,9 @@ const game = {allCards:allCards, usingCards:[], players:players, round:1, fieldC
         }
     },
     gameStart(){
-        this.phase = 'setup'
         this.playerMake();
         this.cardMake();
         this.newGame();
-        display.field();
-        display.turnPlayer();
     },
     cardMake(){
       let t = 1;
@@ -763,9 +782,9 @@ const display = {
       }
       io.emit('field', cards)
   },
-  nextButton(){
+  nextButtonHIde(){
       let a = ''
-      io.emit('nextButton', a)
+      io.emit('nextButtonHide', a)
   },
   roundResult(){
       let data = {round:game.round, players:server.copyOfPlayers()}
@@ -811,6 +830,10 @@ const display = {
     let tn = game.turnPlayer.number
     io.emit('turnplayer', tn)
   },
+  turnPlayerDelete(){
+    let e = ''
+    io.emit('tunplayerdelete', e)
+  },
   takeOver(player){
     io.emit('takeoverbuttonclick', player)
   },
@@ -819,7 +842,7 @@ const display = {
   },
   log(a){
     io.emit('log', a)
-  }
+  },
 }
 
 
@@ -913,6 +936,18 @@ io.on("connection", (socket)=>{
     display.allHands();
     display.hideMyItems(socketID);
     display.field()
+  }else if(game.phase === 'roundresult'){
+    display.name();
+    display.allHands();
+    display.hideItems();
+    display.field()
+    display.roundResult()
+  }else if(game.phase === 'matchresult'){
+    display.name();
+    display.allHands();
+    display.hideItems();
+    display.field()
+    display.matchResult()
   }else{
     display.name();
     display.allHands();
@@ -991,6 +1026,7 @@ io.on("connection", (socket)=>{
     let p = game.players[n]
     p.reverseHand();
   })
+
   //スカウトするカードを選択
   socket.on('fieldcardclick', (data)=>{
     if(data.socketID === game.turnPlayer.socketID){
@@ -1032,11 +1068,10 @@ io.on("connection", (socket)=>{
 
   //次のラウンド
   socket.on('nextroundbuttonclick', (e)=>{
-    display.nextButton()
+    display.nextButtonHIde()
     display.hideResult()
     game.nextRound()
   })
-  
 
   
   //もう一度遊ぶ
@@ -1059,15 +1094,24 @@ io.on("connection", (socket)=>{
 
   //やり直し
   socket.on('undobuttonclick', (player)=>{
-    server.undo()
-    let n = player.number
-    let p = game.players[n]
-    if(game.turn <= 1){
-      p.ready = false
-      game.startCheck()
-      display.showStart(n)
+    if(game.phase !== 'roundresult' && game.phase!== 'matchresult'){
+      let n = player.number
+      let p = game.players[n]
+      server.undo()
+      if(game.turn === 0){
+        p.ready = false
+        game.startCheck()
+        display.showStart(n)
+      }
     }
-    console.log(game.turn)
   })
 
+  //ターン終了
+  socket.on('endbuttonclick', (player)=>{
+    let n = player.number
+    let p = game.players[n]
+    if(p === game.turnPlayer){
+        p.turnEnd();
+    };
+  })
 })

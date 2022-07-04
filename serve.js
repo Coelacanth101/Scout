@@ -19,7 +19,7 @@ app.get("/:file", (req, res)=>{
 /**
  * 3000番でサーバを起動する
  */
- http.listen(3000, ()=>{
+ http.listen(process.env.PORT || 3000, ()=>{
   console.log("listening on *:3000");
 });
 

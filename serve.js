@@ -106,16 +106,28 @@ class Player{
   choice(card){
       if(this.combination.cards.length === 0){
           this.combination.cards.push(card)
+          for(let c of this.combination.cards){
+            display.log(c.name)
+          }
       }else{
           for(let item of this.combination.cards){
               if(item.index > card.index){
                   this.combination.cards.splice(this.combination.cards.indexOf(item), 0, card);
+                  for(let c of this.combination.cards){
+                    display.log(c.name)
+                  }
                   return;
               };
           };
           this.combination.cards.push(card);
+          for(let c of this.combination.cards){
+            display.log(c.name)
+          }
       };
       this.checkCombination()
+      for(let c of this.combination.cards){
+        display.log(c.name)
+      }
   };
   cancel(card){
       server.discard(card, this.combination.cards);
@@ -278,23 +290,29 @@ class Player{
       }
   };
   stayScout(){
-      server.recordLog();
       display.backgroundAllDelete()
+      if(this.combination.cards.length >= 3){
+          this.combination = {cards:[], valid:true, type:'', owner:this};
+          this.candidate = '';
+          this.scoutplace = []
+          return
+      }
+      server.recordLog();
       if(this.action !== 'onlyplay'){
-          if(this.candidate && this.scoutplace.length){
-              if(this.scoutplace.length === 2){
-                  this.hand.splice(this.scoutplace[1].index, 0, this.candidate);
+          if(this.candidate && this.combination.cards.length){
+              if(this.combination.cards.length === 2 && this.combination.cards[0].index === this.combination.cards[1].index-1){
+                  this.hand.splice(this.combination.cards[1].index, 0, this.candidate);
                   this.candidate.holder = this;
-              }else if(this.scoutplace[0].index === 0){
+              }else if(this.combination.cards.length === 1 && this.combination.cards[0].index === 0){
                   this.hand.unshift(this.candidate);
                   this.candidate.holder = this;
-              }else if(this.scoutplace[0].index === this.hand.length-1){
+              }else if(this.combination.cards.length === 1 && this.combination.cards[0].index === this.hand.length-1){
                   this.hand.push(this.candidate);
                   this.candidate.holder = this;
               }else{
                   this.combination = {cards:[], valid:true, type:'', owner:this};
                   this.candidate = '';
-                  this.scoutplace = []
+                  this.combination.cards = []
                   display.backgroundAllDelete()
                   return
               }
@@ -307,7 +325,6 @@ class Player{
               game.fieldCards.owner.chip += 1
               display.chip(server.copyOf(game.fieldCards.owner))
               if(this.action === ''){
-                  this.action = ''
                   game.turnEnd()
               }else{
                   this.action = 'onlyplay'
@@ -319,26 +336,32 @@ class Player{
       this.scoutplace = []
   };
   reverseScout(){
+      display.backgroundAllDelete()
+      if(this.combination.cards.length >= 3){
+        this.combination = {cards:[], valid:true, type:'', owner:this};
+        this.candidate = '';
+        this.scoutplace = []
+        return
+      }
       server.recordLog();
       if(this.candidate){
         this.candidate.reverse()
       }
-      display.backgroundAllDelete()
       if(this.action !== 'onlyplay'){
-          if(this.candidate && this.scoutplace.length){
-              if(this.scoutplace.length === 2){
-                  this.hand.splice(this.scoutplace[1].index, 0, this.candidate);
+          if(this.candidate && this.combination.cards.length){
+              if(this.combination.cards.length === 2 && this.combination.cards[0].index === this.combination.cards[1].index-1){
+                  this.hand.splice(this.combination.cards[1].index, 0, this.candidate);
                   this.candidate.holder = this;
-              }else if(this.scoutplace[0].index === 0){
+              }else if(this.combination.cards.length === 1 && this.combination.cards[0].index === 0){
                   this.hand.unshift(this.candidate);
                   this.candidate.holder = this;
-              }else if(this.scoutplace[0].index === this.hand.length-1){
+              }else if(this.combination.cards.length === 1 && this.combination.cards[0].index === this.hand.length-1){
                   this.hand.push(this.candidate);
                   this.candidate.holder = this;
               }else{
                   this.combination = {cards:[], valid:true, type:'', owner:this};
                   this.candidate = '';
-                  this.scoutplace = []
+                  this.combination.cards = []
                   display.backgroundAllDelete()
                   return
               }
@@ -351,7 +374,6 @@ class Player{
               game.fieldCards.owner.chip += 1
               display.chip(server.copyOf(game.fieldCards.owner))
               if(this.action === ''){
-                  this.action = ''
                   game.turnEnd()
               }else{
                   this.action = 'onlyplay'

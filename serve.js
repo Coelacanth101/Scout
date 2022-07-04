@@ -61,6 +61,7 @@ class Card{
       }
   };
   recordLog(){
+    display('64')
     this.before.number = this.number;
     this.before.rnumber = this.rnumber
     this.before.position = this.position

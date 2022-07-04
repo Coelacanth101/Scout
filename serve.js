@@ -845,6 +845,7 @@ const server = {
   recordLog(){
     for(c of game.usingCards){
       display.log('842')
+      display.log(server.copyOfCard(c))
       c.recordLog()
     }
     for(p of game.players){

@@ -113,21 +113,12 @@ class Player{
           for(let item of this.combination.cards){
               if(item.index > card.index){
                   this.combination.cards.splice(this.combination.cards.indexOf(item), 0, card);
-                  for(let c of this.combination.cards){
-                    display.log(c.name)
-                  }
                   return;
               };
           };
           this.combination.cards.push(card);
-          for(let c of this.combination.cards){
-            display.log(c.name)
-          }
       };
       this.checkCombination()
-      for(let c of this.combination.cards){
-        display.log(c.name)
-      }
   };
   cancel(card){
       server.discard(card, this.combination.cards);

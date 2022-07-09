@@ -269,7 +269,6 @@ const display = {
         $('.reversebutton').hide();
         $('#players').show();
         this.toggleTakeOver();
-        console.log('b');
     },
     hideMyItems(nop){
         let i = 1
@@ -446,14 +445,11 @@ const display = {
         let condition = 'watching'
         while(i <= 4){
             if($(`#player${i}`).data('socketid') === socket.id){
-                console.log(i)
-                console.log('r')
                 condition = 'playing'
             }
             i += 1
         }
         if(condition === 'playing'){
-            console.log('p')
             $('.takeoverbutton').hide()
         }else{
             $('.takeoverbutton').show()

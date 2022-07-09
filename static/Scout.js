@@ -4,8 +4,14 @@ let players = [];
 
 //画面初期化
 $('#initializebutton').on('click', function(){
+    $('#yesorno').show()
+})
+$('#yesbutton').on('click', function(){
     let e =''
-    socket.emit('initializebuttonclick', e)
+    socket.emit('yesbuttonclick', e)
+})
+$('#nobutton').on('click', function(){
+    $('#yesorno').hide()
 })
 
 //名前の入力発信
@@ -103,7 +109,7 @@ socket.on('fieldcardred', (card)=>{
 socket.on('fieldcarddelete', (card)=>{
     display.fieldCardDelete(card)
 });
-socket.on('initializebuttonclick', ()=>{
+socket.on('yesbuttonclick', ()=>{
     display.initialize()
 });
 socket.on('turnplayer', (tn)=>{

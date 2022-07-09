@@ -291,7 +291,7 @@ const display = {
     name(players){
         for(let p of players){
             $(`#player${p.number}`).data('socketid', `${p.socketID}`);
-            $(`#player${p.number}name`).html(`${p.name}   `);
+            $(`#player${p.number}name`).html(`${p.name}          `);
             this.gain(p);
             this.chip(p);
             this.doubleaction(p);

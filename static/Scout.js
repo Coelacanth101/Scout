@@ -447,6 +447,7 @@ const display = {
             if($(`#player${i}`).data('socketid') === socket.id){
                 condition = 'playing'
             }
+            i += 1
         }
         if(condition === 'playing'){
             $('.takeoverbutton').hide()

@@ -442,9 +442,9 @@ const display = {
     },
     hideTakeOver(){
         console.log('t')
-        /*let i = 0;
+        let i = 0;
         let condition = 'watching'
-        while(i <= 4){
+        /*while(i <= 4){
             if($(`#player${i}`).data('socketid') === socket.id){
                 console.log(i)
                 console.log('r')

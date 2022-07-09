@@ -268,7 +268,8 @@ const display = {
         $('.startbutton').hide()
         $('.reversebutton').hide();
         $('#players').show();
-        this.hideTakeOver()
+        this.hideTakeOver();
+        console.log('b');
     },
     hideMyItems(nop){
         let i = 1
@@ -439,20 +440,23 @@ const display = {
         $(`#player${player.number}`).data('socketid', player.socketID)
         this.hideTakeOver()
     },
-    /*hideTakeOver(){
+    hideTakeOver(){
         console.log('t')
-        let i = 0;
+        /*let i = 0;
         let condition = 'watching'
         while(i <= 4){
             if($(`#player${i}`).data('socketid') === socket.id){
+                console.log(i)
+                console.log('r')
                 condition = 'playing'
             }
             i += 1
         }
         if(condition === 'playing'){
+            console.log('p')
             $('.takeoverbutton').hide()
-        }
-    },*/
+        }*/
+    },
     showStart(n){
         $(`#startbutton${n}`).show();
         $(`#reversebutton${n}`).show();

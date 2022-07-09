@@ -20,8 +20,7 @@
         display: none;
     }
         .player{
-            margin: auto;
-            margin-top: 5px;
+            margin: 5px auto 0px auto;
         }
             .name{
                 text-align:center;

@@ -837,7 +837,7 @@ const display = {
   },
   initialize(){
     let a = ''
-    io.emit('initializebuttonclick',a)
+    io.emit('yesbuttonclick',a)
   },
   turnPlayer(){
     let tn = game.turnPlayer.number
@@ -1097,7 +1097,8 @@ io.on("connection", (socket)=>{
   })
 
   //初期化
-  socket.on('initializebuttonclick', (e)=>{
+  
+  socket.on('yesbuttonclick', (e)=>{
     display.initialize()
     game.initialize()
   })

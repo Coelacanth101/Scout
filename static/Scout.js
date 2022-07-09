@@ -124,8 +124,8 @@ socket.on('hidemyitems',(nop)=>{
 socket.on('showstart', (n)=>{
     display.showStart(n)
 })
-socket.on('hidetakeoverbutton',()=>{
-    display.hideTakeOver()
+socket.on('toggletakeoverbutton',()=>{
+    display.toggleTakeOver()
 })
 
 
@@ -268,7 +268,7 @@ const display = {
         $('.startbutton').hide()
         $('.reversebutton').hide();
         $('#players').show();
-        this.hideTakeOver();
+        this.toggleTakeOver();
         console.log('b');
     },
     hideMyItems(nop){
@@ -438,9 +438,9 @@ const display = {
     },
     takeOver(player){
         $(`#player${player.number}`).data('socketid', player.socketID)
-        this.hideTakeOver()
+        this.toggleTakeOver()
     },
-    hideTakeOver(){
+    toggleTakeOver(){
         console.log('t')
         let i = 0;
         let condition = 'watching'
@@ -455,6 +455,8 @@ const display = {
         if(condition === 'playing'){
             console.log('p')
             $('.takeoverbutton').hide()
+        }else{
+            $('.takeoverbutton').show()
         }
     },
     showStart(n){

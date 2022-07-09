@@ -850,9 +850,9 @@ const display = {
   takeOver(player){
     io.emit('takeoverbuttonclick', player)
   },
-  hideTakeOver(){
+  toggleTakeOver(){
     let e = ''
-    io.emit('hidetakeoverbutton',e)
+    io.emit('toggletakeoverbutton',e)
   },
   showStart(n){
     io.emit('showstart', n)

@@ -124,6 +124,9 @@ socket.on('hidemyitems',(nop)=>{
 socket.on('showstart', (n)=>{
     display.showStart(n)
 })
+socket.on('toggletakeoverbutton',()=>{
+    display.toggleTakeOver()
+})
 
 
 //手札を選択
@@ -433,6 +436,18 @@ const display = {
     },
     takeOver(player){
         $(`#player${player.number}`).data('socketid', player.socketID)
+    },
+    toggleTakeOver(){
+        let i = 0;
+        let condition = 'watching'
+        while(i <= 4){
+            if($(`#player${i}`).data('socketid') === socket.id){
+                condition = 'playing'
+            }
+        }
+        if(condition === 'playing'){
+            $('.takeoverbutton').hide()
+        }
     },
     showStart(n){
         $(`#startbutton${n}`).show();

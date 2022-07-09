@@ -850,6 +850,10 @@ const display = {
   takeOver(player){
     io.emit('takeoverbuttonclick', player)
   },
+  toggleTakeOver(){
+    let e = ''
+    io.emit('toggletakeoverbutton',e)
+  },
   showStart(n){
     io.emit('showstart', n)
   },
@@ -955,17 +959,20 @@ io.on("connection", (socket)=>{
     display.hideItems();
     display.field()
     display.roundResult()
+    display.toggleTakeOver()
   }else if(game.phase === 'matchresult'){
     display.name();
     display.allHands();
     display.hideItems();
     display.field()
     display.matchResult()
+    display.toggleTakeOver()
   }else{
     display.name();
     display.allHands();
     display.hideItems();
     display.field()
+    display.toggleTakeOver()
   }
   
   //名前の入力

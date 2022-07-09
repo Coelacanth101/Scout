@@ -451,11 +451,11 @@ const display = {
                 condition = 'playing'
             }
             i += 1
-        }
+        }*/
         if(condition === 'playing'){
             console.log('p')
             $('.takeoverbutton').hide()
-        }*/
+        }
     },
     showStart(n){
         $(`#startbutton${n}`).show();

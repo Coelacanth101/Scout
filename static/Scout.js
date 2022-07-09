@@ -439,7 +439,7 @@ const display = {
         $(`#player${player.number}`).data('socketid', player.socketID)
         this.hideTakeOver()
     },
-    hideTakeOver(){
+    /*hideTakeOver(){
         console.log('t')
         let i = 0;
         let condition = 'watching'
@@ -452,7 +452,7 @@ const display = {
         if(condition === 'playing'){
             $('.takeoverbutton').hide()
         }
-    },
+    },*/
     showStart(n){
         $(`#startbutton${n}`).show();
         $(`#reversebutton${n}`).show();

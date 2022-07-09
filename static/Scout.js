@@ -413,6 +413,7 @@ const display = {
         $('#field').hide()
         $('#result').hide();
         $('#players').hide();
+        $('#yesorno').hide()
         $('#nameinputarea').html('<h1>名前を入力してください</h1>')
         let i = 1
         while(i <= 5){

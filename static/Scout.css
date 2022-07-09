@@ -21,10 +21,11 @@
     }
         .player{
             margin: auto;
-            
+            margin-top: 5px;
         }
             .name{
                 text-align:center;
+                margin-left: 5px;
             }
             .information{
                 text-align:center;

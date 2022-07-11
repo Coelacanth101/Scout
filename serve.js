@@ -336,22 +336,27 @@ class Player{
         this.scoutplace = []
         return
       }
-      
-      if(this.candidate){
-        this.candidate.reverse()
-      }
       if(this.action !== 'onlyplay'){
           if(this.candidate && this.combination.cards.length){
               if(this.combination.cards.length === 2 && this.combination.cards[0].index === this.combination.cards[1].index-1){
                   server.recordLog();
+                  if(this.candidate){
+                    this.candidate.reverse()
+                  }
                   this.hand.splice(this.combination.cards[1].index, 0, this.candidate);
                   this.candidate.holder = this;
               }else if(this.combination.cards.length === 1 && this.combination.cards[0].index === 0){
                   server.recordLog();
+                  if(this.candidate){
+                    this.candidate.reverse()
+                  }
                   this.hand.unshift(this.candidate);
                   this.candidate.holder = this;
               }else if(this.combination.cards.length === 1 && this.combination.cards[0].index === this.hand.length-1){
                   server.recordLog();
+                  if(this.candidate){
+                    this.candidate.reverse()
+                  }
                   this.hand.push(this.candidate);
                   this.candidate.holder = this;
               }else{

@@ -187,17 +187,17 @@ class Player{
       }
   };
   playCards(){
-      server.recordLog();
       display.backgroundAllDelete()
-      if(this.combination.type === 'reversesequence'){
-          let arr = []
-          for(let item of this.combination.cards){
-              arr.unshift(item)
-          }
-          this.combination.cards = arr
-          this.combination.type = 'sequence'
-      };
       if(this.combination.valid && game.combiJudge(this.combination, game.fieldCards)){
+          server.recordLog();
+          if(this.combination.type === 'reversesequence'){
+            let arr = []
+            for(let item of this.combination.cards){
+                arr.unshift(item)
+            }
+            this.combination.cards = arr
+            this.combination.type = 'sequence'
+          };
           this.gain += game.fieldCards.cards.length
           for(let item of this.combination.cards){
               item.index = this.combination.cards.indexOf(item)

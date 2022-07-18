@@ -386,7 +386,7 @@ class Player{
       this.scoutplace = []
   };
   double(){
-    server.recordLog();
+    /*server.recordLog();*/
       if(this.doubleAction === 1 && game.turnPlayer === this){
           this.action = 'double'
           this.doubleAction -= 1
